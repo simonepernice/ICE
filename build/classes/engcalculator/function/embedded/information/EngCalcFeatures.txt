@@ -1,0 +1,158 @@
+That is just brief list of ICE (Interval Calculator for Engineer) features to let you taste what can be done with ICE. Use help and exacthelp to get more details on single commands, functionlist shows all the functions available.
+
+
+ICE is based upon a kernel (which may be used from the command line) and a deeply integrated console which provides several useful helps to simplify the use of the program. Here the features of both programs are described.
+
+
+To type the functions just write few beginning letters and then push TAB button several times to complete it or have all the possible functions matching. To see the previous typed expression use PAGE UP or PAGE DOWN. To enter a multiple-line input use CTRL + ENTER. To complete missing brackets push ENTER. From the menu it is possible to load and save the history to be used later to review the calculations. At startup the console loads and executes the file called startup.ice if exists, which can be used to configure ICE as required bye the user.
+
+
+Use help('initial characters of a command') to get that command help. Use helpexact ('functionname') to see the help of just the function matching exactly its input. The command functionlist returns all the functions and variables available. The command "features" shows this list. The command "instructions" explains the basic of intervals and ICE. The command "about" gives details on the current release and is automatically displayed at startup.
+
+
+As default the ICE understands and replay in engineer notation, therefore 5m means 5*10^-3, 7u means 7*10^-6, 8k means 8*10^3. The prefixes used are: "yzafpnumkMGTPEZY". If you prefer to avoid the engineer notation you can insert value in exponential format (using lower case "e" for exponent, i.e.: 1e10=10G, it is not possible to use E which in engineer notation means 10^18) and to get the output in exponential format use the systemPrintMode function (write help('systemPrintMode') to get the printmode help).
+
+
+There are several ways to insert an interval. Use the notation 1m%5 to mean an interval centered at 1m (1*10^-3) with 5% tolerance i.e. from (1-5/100)*10^-3 to (1+5/100)*10^-3. To insert an interval by its extremes use _ as follows -1_5 (an interval between -1 and 5). It is possible to define also an absolute error 5+-1 means an interval between 4 and 6.
+
+
+ICE has very few internal functions (only brackets and ';'). Most of the functions (like + , -) are standard functions loaded at startup. There are several other functions can be loaded with systemUseGroup. Those functions are split in groups. Usually the name of a function is made by its group followed by the function name beginning with upper case. For instance systemPrintMode is the PrintMode function in the group system. In the following summary only PrintMode will be reported, if it begins with upper case add its group name before. For example functions log and Arg, it is required add the group only for Arg, which gives the function name complexArg. There are few exception to this rule: the infix operators like + (which belongs to arithmetic group) and the most common function (like sin which belong to trigonometry functions). 
+
+
+The group arithmetic has the basic arithmetic functions + (infix (sum) and prefix (nothing)), - (infix (subtract) and prefix (negate)), *, /, invert (to invert a number).
+
+
+The group interval owns the functions on interval. There are several functions: the Direction (proper or not proper), the Distance toward another interval, the Dual, the Extremes (or just "Left" and "Right"), the Module, the Proper to make it proper, the Sign, the ValTol to get value and tolerance (or just Value and Tolerance), the Range (right - left), the Roundings fix how ICE should behave with roundings. It enables the outer roundings which grants every computation contains for sure the result of the operation (on proper intervals).
+
+
+The group complex contains the functions required to support complex. At the moment all the arithmetic and complex functions plus few more are extended to complex intervals (like FFT, ...) The function on the complex group are: Real and Imaginary to get the respective parts. There are also abs (for the module), Arg (for the phase) and Conjugate, exp (Neper number risen to a given power). The imaginary unit is called I, so that I*I==-1. Root and Power are avaiable to compute the n-th roots and the power of a complex number. It is possible to build a complex interval with infix operator +|, i.e.: 3 +| 2 == 3 + 2 * I. 
+
+
+Every function input and output is a list. Usually ICE manages just flat lists. A list is a ordered sequence of intervals separated by ','. Since ',' has very low priority, usually lists are contained within round brackets. Therefore if a result requires several steps, they can be calculated in a list. Sometimes only the final result makes sense, in that case it is possible to use sub-expressions. One expression may be composed by several sub-expressions divided by ";". The calculator does not return answer to the sub-expressions ending with ";". 
+
+
+ICE manages also nested list, which means a list where some element is a list instead of an interval. A list within a list is called sub-list. It is possible to nest several times a list within a list. The few cases where a sub-list is required is in the functions taking more than 1 list as argument. In that case it is required to insert the list(s) as a sub-list. A sub-list is represended as a list (or matrix) within curly brackets {}. For example to shaffle two lists write listShuffle ({1,2,3,4},{6,7,8,9}). There are few functions requiring sub-list as argument because usually just one list is provided as input. Most of the matrix operations can be applied on more matrix at time saving matrix in sub-lists. The operators :: and ::= can get and set elements within sub-list. listFlatten can remove all internal sub-list.
+
+
+It is possible to provide several sub expressions to evaluate all in once using CTRL+ENTER to go to the new line. All the sub-expression are evaluated as entered alone.
+
+
+It is quite useful to apply the same function to several intervals using list. The group list contains all the functions supported for list. A list is a set of intervals written between round brackets and separated by commas: (1,2,3)*4=(4,8,12). Use the operator :: to get elements from lists or from a matrix and ::= to set them. They accepts interval to extract a set of elements and negative number represents the end of the list toward the beginning (-1 is the last, -2 the one before the last and so on). When a lot of elements need to be taken there is a really useful function '..'. The syntax start .. end create a list from star to end, while start .. end .. step makes a list of integer from start to end at the given step. There are a lot of functions to make the most useful lists to be used in computations in the group list. It is possible to use Incremental, Integer (or ..), Linear, Logarithmic, Clone to create a new list. While Grow is very useful to grow a list in a way to be useful in further computation, Shuffle can mix lists in useful order, Combination provides all the possible combination of a set of sub-lists, Flatten remove all the sub-lists contained. The function '?' returns its left argument only if its right is true, it can be used to exract from a list data with some characteristics. Similar to '?', IndexOf apply a prefix function to each element of the list and returns the indexes where the function has returned true.
+
+
+Vectors are lists on which standard vector function are applied. Verctor usually are multi-dimensional altohough few functions are applied only on 3 dimensions. See: Module, scalar product (*.) and vector product (*:), Divergence, Gradient and Curl.
+
+
+Like lists the matrices can simplify the calculus repeating automatically the same operations on their intervals. A matrix is just a list which know its matrix column number. It is showed row by row. Therefore most of the list functions can be applied to matrices. The group is called matrix. To build a matrix write the rows between square brackets: [[1,2],[3,4]] is a matrix composed by two rows. It is possible, given a list, to transform it in a matrix defining its number of columns with # operator: (1,2,3,4)#2. It is possible to select a sub matrix with operator :: whose require a list of (row interval, column interval) to get the required sub matrices. It is possible to change a list with ::= which requires on the left the list to be changed and on the right the elements set and their new values. When the basic operations are extended to matrix they are considered as list. There are extra functions designed especially for matrices (some coming from JAMA library and therefore working only on pointinterval). Look at the following function of matrix group: Determinant, Eigenvalue, Eigenvector, Invert, Diagonal, Identity, Transpose, ** (row by column product), // (division), ^^ (power), RowSize, ColumnSize. The function Sort can sort a matrix with a give column priority.
+
+
+Lists can be also used to store data for statistical analysis. The group statistic owns the following functions: Average, StandarDeviation, Correlation, StandardDeviationPopulation, MinMax, Size, FrequencyBinCumulative, FrequencyBinNormalized (to compute the distribution probability of the sample), Correlation, Covariance, RegressionLinear, RegressionGeneral, Percentile, Random, RandomList (can be used for MonteCarlo simulation creating statistic variables), DistributionUniform, DistributionTriangular, DistributionNormal. There are several pseudo random number generator selectable with RandomGenerator function. RandomList lets define a statistic variable with arbitrary pdf using ?=. Those variables are very usefull with FrequencyBinNormalized to execute very generic and quick montecarlo analysis.
+
+
+The logarithm group contains the log (base 10) and ln base E are available. 
+
+
+The trigonometric group contains constant PI=3.14.., the basic trigonometric functions: sin, cos, tans, arcsin, arccos, arctan. 
+
+
+The hyperbolic group contains the basic hyperbolic functions: Sin, Cos, Tan, ArcSin, ArcCos, ArcTan. 
+
+
+The power group contains the constant E=2.71.., exp (which is E ^ x and supports complex number), square (sqr), square root (sqrt), power ^.
+
+
+The diffuse group contains several ways to apply an infix function (which takes a single argument per side) to a list of values. As first argument cumulate gets the infix function to be used as operand: diffuseCumulate ('+', 1, 2, 3) == ((1 + 2) + 3) == 6. While Spread applies the given infix function to all the adiacent couples of a list: diffuseSpread ("+", 1, 2, 3) == ((1+2), (2+3)). SpreadOnGroup is useful to apply an infix function (working on a list) on the groups made by a list split in sub-groups of a given size. It is very usefull to apply functions on matrix row. Feed takes an argument and applies it at a set of prefix function, it is used for efficiency when it takes long time to compute that argument. ExpandParameters is useful with prefix function of multiple arguments that needs to be recalculated several time on a sub-set of its parameters (keeping the other constant).
+
+
+The constant group contains several physical constants. Write constant and then push TAB to see them all.
+
+
+The convert group contains the unit measure converting constants, to see what is available write convert and push TAB.
+
+
+The logic group contains the logic operators: && (and), || (or) and !!(unary not or binary xor) used on intervals. They regards 0 as false, 1 as true and 0_1 as trueFalse (something which may be true or false). The constants true, trueFalse and false are defined. 
+
+
+The comparison group contains the functions to compare proper real intervals ==, >, >=, !=, <, <= (== and != works also with not proper, complex and literals). They return true, false and trueFalse.
+
+
+The conditional group contains several functions which use the logic result to evaluate their result. The logic is computed by a prefix function or by the ownership of the argument to a given interval. There is an If function which depending on the argument logic value (true, trueFalse, false) returns respectively a different result. The function Switch is like 'If' but it checks only for true and can check on several conditions. They are useful to define functions make up by several equations depending on their domain. Moreover While, DoWhile and For let the user to create loops. Consider loops usualy are not required because using lists ICE make loop by itself. 
+
+
+Every sub expression is evaluated from left to right. However it is possible to change the reading flow of the sub-expressions using the functions of the flowControl group. They are RepeatNextWhile, RepeatPreviousWhile, RepeatThisWhile, SkipNextIf, StopHereIf, ReturnThisIf. Please note those instructions do not work in compiled functions.
+
+
+Every expression is executed line by line. However it is possible to collect a list of expression in a multilineExpression. In a multilineExpression there are function to jump from a point to another (label or line). There are also the go sub function to create sub routines. See GoTo, GoToEnd, GoSub, GetResult, GoToBeforePrevious, Statement, GoToBegin, GoToPrevious, Return, GoToThis, GoToAfterNext.
+
+
+The integer group contains the functions working on integers. Internal ICE integer are 63 bit long maximum, it is not provided any feature on arbitrary long integer being not that a target for ICE users. Ceiling, Floor and Round, which are the only ones takeing real interval and returning integers. RoundToDigits would left the required number of decimal digits. The other functions takes and returns integers. The functions are logic bit wise operators: (&&&) AND, (|||) OR, (!!!) XOR or unary NOT; Factorization to get the prime numbers, GCD (greatest common divider), LCM (least common multiplier), and eventually the base converter: FromBaseToBaseTen and BaseTenToBase.
+
+
+Some useful engineer functions are defined in engineer group: the "inverted sum" (+/) a+/b=1/(1/a+1/b) and the "squared sum" (+^) a+^b = sqrt(a^2+b^2), conversion from an to color code (FromColor, ToColor). Preferred finds the closer industrial standardized value at closer standardized tolerance, CloserPreferreds is like preferred but finds the couple of standard values lower and higer than the given one, List given a couple of intervals provide the list of preferred industrial values between them, Scanner given a prefix function, some ranges for its input variables and a target value, looks for the best matching industrial values, Partition (a,b,c)=a/(a+b+c), PartitionInverse does the opposite, the number of taus required to go from a couple of values SinglePoleTaus (min_max, begin_end).
+
+
+The decibel group contains the function to go from db to amplitude and power and vice versa. 
+
+
+The fourier group contains fast fourier transform (direct and inverse): FFT, InverseFFT and also the discrete furier transform (which does not require the sample size being a power of 2).
+
+
+The optimization group contains UncMin function an original Fortran routine for multi variable not linear optimizer to find the minimum of a function given a starting point.
+
+
+The main drawback of intervals is that the result tends to be overextimated. Some useful function scan were provided to check if a smaller result is possible althouth their result is not sure to be correct. Those functions are grouped in functionScan. The functions available are: Linear which scans linearly and works on proper and not proper intervals, Random is more efficient because works on random number but does not accept not proper intervals. Montecarlo is similar to Random but it is possible to use uniform or normal distribution. A more generic montecarlo simulation can be obtained with statistic package and RandomList function to generate random variables.
+
+
+The interval can be seen as a set of real number. Therefore the setInterval group provides functions to manage it. It is possible to intersect (&), join (|) intervals, check if proper intervals are subset (<<) or superset (>>).
+
+
+The lists can be considered as a set of interval. Therefore the setList group provides to function to manage it. There are function to extract a set from a list (Extract), to order (Sort, which can optionally work on matrix) and to intersect (&&&&) and union (||||) a couple of set lists.
+
+
+The calculus group provides some numeric functions are available for calculus. See Derivate, Integrate for finite differential. The old version of integration functions was called IntegrateUniform and IntegrateUniformFunction. SeriesSum and SeriesProduct are also available. Two function for approximate searching of Maximum and Minimum of a function are available.
+
+
+The equation group owns all the functions to solve equations. There is  FindRoot for a single equation, FindIntersection to find the intersection between a couple of equations, GaussElimination and GaussSeidel on simultaneous equations, OrdinaryDifferentialEquationFirst compute the result of differential equation in table form to plot or create a new function (by :=). ActractiveFixedPoint can be used to solve set of equation in the form 1 = f1 (x1, .., xn), x2 = f2 (x1, .., xn), .. , xn = fn (x1, .., xn) iteratively given a starting point. 
+
+
+The polynomial group represents a polinomial by the list of its coefficients ordered from highest degree to the constant. This group contains the basic operations on polynomial (addition +++++, subtraction ----, multiplication ***** and division ///// which returns quotient and remider). This group also contains several numerical polinomial solvers to find the roots like Jenkins Traub. It contains also derivative and integration. Eventually it can compute the tylor polinomial.
+
+The user can define new variable and functions with define group. It is possible to define user functions and variables with infix operator "=". To define the variable a as list write: $a = 12 or $a = (1,2,3%2). The "''" or "$" is required because 'a' has not to be interpreted by ICE but it should be considered as a literal. That is very important for function. There is shortcut for '' which works only on variable and function names that is $. "=" can define functions as well: ($f,$x,$y)='x+y' it would work without '' the first time because every time a literal is found and it is not a variable neither a function it is considered a literal. A shortcut for the previous expression would be ($f,$x,$y)='x+y'.  
+Functions are quite fast because their input is tokenized (all the pieces are converted to something ICE can understand quickly). However it is required to follow the operator precedence and brackets to get the final answer. To improve further the speed there are compiled function where the expression is executed only the first time to understand and save the exact procedure to get the final answer (it is saved in Reverse Polish Notation to run directly from the stack without recursive calling, it is partially optimized and several check are disable at runtime). The command to define compiled functions uses "_=" and the rest of the syntax is the same of functions. That is NOT the default because it does not support flow control commands (like repeatnextwhile), ";" and recursion. Eventually most of the input checks are disabled for speed improvement but that may hang ICE up.
+One useful way way to define functions is by their list of points. The infix operator is ":=" and requires the function name and a list of points (two column matrix: first column is x and the second is y). It can be used to make a function from a measurement or from the output of other functions like the ones given by plotStandard. It is very useful to define a function when just its Y values at given X are known. It can be used to transform a FFT, montecarlo, or ordinarydifferentialequationfirst result in a function to be evaluated in other places.
+Some functions takes other function name as argument. Those function usually need as argument a function with a well defined number of arguments (usually 1). It is possible to make a function equal to another function that needs less arguments because some parameters are fixed with operator "#=". For example ($f, 5, $x) #= $g will create a new function f and every call to f (i.e. f(1)) will use 1 instead as argument for g(5,1). 
+InverseFunctionDefinition given a function, a new name, an evaluation interval and the number of points defines the inverse function of the given one.
+The functions Delete can be used to delete a variable or a function defined by user, DeleteAll to delete all variables and functions defined by the user.
+It is possible to overwrite ICE function and variables with FunctionLockClear which remove the protection. All the pointer to the previous versions will keep to use that, only the new instances willl be changed. With the same way lockSet let the user to Lock its own functions. 
+ICE supports lambda function with LambdaFunction which is useful to create functions for which it is not required to be stored, for example because it is required just their plot.GetLambdaName is a more generic way to obtain name to be used for Lambda Functions or variables...
+All the ICE functions are collected in groups. The user can do the same with setCurrentGroup which will set the group for all the new variable and function definition. So if current group is g and a new function f is defined, its actual namem will be gf.
+
+
+The reactiveExpression group contains a special kind of expression called reactive expressions. It looks like a variable definition (with === function), like $a ===  'b + c + 2'. The values of b and c must be known and at list one parameter has to be a variable. The value of a is immediately stored and calculated like it was a definition a = b + c + 2. However at the end of every expression computation, all the reactive expressions whose input changed are automatically recalculated. They can be defined to depend on each other output if required as far as the definition is not recursive. They are automatically deleted when their output variable is deleted. The console automatically shows the new variables each time the reactive expression are triggered. This function can be used in trial and error design to see how the results change when any of the input is updated. The check to trigger a reactive expression is done at the end of any computation but may be trigger whenever required with Trigger, Show will show all the reactive expressions stored in the execution order. FindRoot will adjust a variable in order to set the value of a reactive expression to the one required. OptimizeUnconditionalMinimum will find the variables value to minimize the result of a reactive expression. DefineFunction is used to make a prefixFunction from a reactive expression; that is useful to run functions able to accept prefixFunction to reactiveExpressions.
+
+
+The measurementUnit group contains the tools to create and use mksA measurement units. They can be attached to any interval with syntax @ 'A' (to define as Ampere). Most of the functions works with them although not all are updated up to now  (20/05/2015). Define can be used to create new measurement unit from other already available, Manage choose if enable or not (because the calculation with wrong measurement unit like adding Volt and Ampere will not be completed).
+
+
+The program group contains useful functions to write its own function. It is possible to check the input variables domain with "Type" instruction and generate an error if required with "Error" function. If a function name is passed as argumentn use CallFunction instruction to execute it. The function "TimeMs" can be used to get the time in millisecond to measure function compute time.
+
+
+The file group contains the function to save and load a list with LoadList and SaveList to be used later on a new execution of ICE. Moreover a brute-force file reader, called LoadPointMatrix is available to get numerical data from a ASCII file organized in table. To save and load matrix LoadCSVPointMatrix and SaveCSVPointMatrix are available.
+
+
+To plot functions it is required to create a variable with a 2 (y=f(x) or x=f(z), y=f(z)), 3 (color=f(x,y)) or 4 ((vectx, vecty)=f(x,y)) columns matrix then go to the plot windows to see them. The plot function group provides all the plot facilities. Try the following: seno = plotStandard($sin, 25, 0_2*pi); Then go to the draw window, enable seno variable visibility (may be set joined) to see the sin between 0 and 2 pi with 25 dots. StandardAdaptive is able to detect the proper number of point where f will be computed. Have a look also at StandardTick if the function will be print on x intervals instead of points. Data takes a list of element and just add as x a sequence of integer starting from 1. StandardLogarithmic distribuite the x in logarithmic sequence, it is useful to have uniform distribution for xLog plot. Also BodeModule and BodePhase can be used to plot Bode diagrams. Parametric, ParametricTick are used to plot parametric functions. Surface is used to draw 3 dimensional graphs: all x and y intervals are used. For each one f (xi, yi) is computed. Eventually check Vector which will draw the arrow of the vector. Since the curves may be thick it would be difficult to see the exact intersection, therefore when two curves overlap their color changes.
+
+
+The panel where the functions are drawn has several functions to change the current view without use the option window. Drag the mouse drawing the diagonal of an imaginary rectangle pushing the left button, the X and Y will be zoomed proportionally to the displacement from the center of the screen. Drag the mouse in a direction with central button pressed to move the panel in that direction proportionally to the displacement. Drag the mouse in diagonal with right button pressed to zoom out the panel of the same X and Y amount of the mouse from the center. Draw the diagonal of an imaginary rectangle while pushing the CTRL key to have exactly that part of the screen zoomed. Use option for more advanced details on drawing and zoom. Use redraw to repaint the screen.
+
+
+The information group contains all the help functions: Tutorial, About, Features, FunctionList, History, Instructions, License, Version, help and exactHelp.
+
+
+The literal group contains the very basic function for literal manipulation: Join, Split, FromUnicode, ToUnicode. It also provide regular expression to match, find and split bigger literals.
+
+
+There are several useful functions in the system group: PrintMode to set the output string format, Quit to exit the program, StepsAccuracy to set the ICE overall max number of steps and accuracy for iterative algorithms. UseGroup to load the required group of functions (at startup a basic set of functions (called BASE) are automatically loaded).
+
+
+There are some useful variables automatically defined: answer??? or lastAnswer stores the previous results.

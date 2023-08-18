@@ -1,0 +1,118 @@
+/*
+ *     ICE (Interval Calculator for Engineer) is a programmable calculator working on intervals.
+ *     Copyright (C) 2009  Simone Pernice
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package engcalculator.function.embedded.equation;
+
+
+import engcalculator.interval.Interval;
+import engcalculator.interval.ListIntervals;
+import engcalculator.interval.ListMatrixIntervals;
+import engcalculator.domain.DomainListMatrix;
+import engcalculator.domain.DomainIntervalPoint;
+import engcalculator.function.IterationLimits;
+import engcalculator.function.prefix.FunctionPrefix;
+import engcalculator.function.embedded.arithmetic.AriDiv;
+import engcalculator.function.embedded.compare.ComGreater;
+import engcalculator.function.embedded.arithmetic.AriMul;
+import engcalculator.function.embedded.arithmetic.AriSub;
+import engcalculator.function.embedded.interval.ItvDual;
+
+/**
+ *
+ * @author Simone Pernice <pernice@libero.it>
+ */
+public class EquGaussElimination extends FunctionPrefix {
+    private final static String[] EXAMPLE = {"(1, 2, 3, 4)#2,(5,6)#1"};
+    private final static String[] RESULT = {"(-4,4.5)#1"};
+    private final static DomainListMatrix DOMAIN = new DomainListMatrix(1, new DomainIntervalPoint());
+
+    private final static ComGreater GREATER = new ComGreater();
+    private final static AriMul MUL = new AriMul();
+    private final static AriDiv DIV = new AriDiv ();
+    private final static AriSub SUB = new AriSub();
+    private final static ItvDual DUAL = new ItvDual();
+
+    private IterationLimits il;
+
+    public EquGaussElimination() {
+        super("equation", "GaussElimination", (byte) -1, DOMAIN, false, true, "... solves simultaneous equation using Gauss elimination algorithm. The source code was adapted from http://snippets.dzone.com/posts/show/4874. It is still not properly working on intervals, I have to understand if it is possible to solve simultaneous equations with intervals, at the moment that feature is disabled (try with gaussseidel function instead).", EXAMPLE, RESULT);
+    }
+
+    @Override
+    public ListIntervals _compute(ListIntervals input) throws Exception {
+        il = new IterationLimits();
+
+        ListMatrixIntervals result = new ListMatrixIntervals (input);
+        forwardSubstitution(result);
+        reverseElimination(result);
+        return getSolutionColumn(result);
+
+    }
+
+    void forwardSubstitution(ListMatrixIntervals result) throws Exception {
+        int i, j, k, max;
+        final int n=result.rowSize();
+        Interval t;
+        for (i = 0; i < n; ++i) {
+            max = i;
+            for (j = i + 1; j < n; ++j) {
+                il.isEndStepsWithException();
+                if (GREATER.compareForTrue(result.get(j, i), result.get(max, i)))
+                    max = j;
+            }
+
+            for (j = 0; j < n + 1; ++j) {
+                il.isEndStepsWithException();
+                t = result.get(max,j);
+                result.set(max,j, result.get(i,j));
+                result.set(i, j, t);
+            }
+
+            for (j = n; j >= i; --j)
+                for (k = i + 1; k < n; ++k) {
+                    il.isEndStepsWithException();
+                    result.set(k, j, SUB._computeIntervals(result.get(k, j), DUAL._computeIntervals(DIV._computeIntervals(MUL._computeIntervals(result.get(k, i), result.get(i, j)), DUAL._computeIntervals(result.get(i ,i))))));
+                }
+
+        }
+    }
+
+    void reverseElimination(ListMatrixIntervals result) throws Exception {
+        int i, j;
+        final int n=result.rowSize();
+        for (i = n - 1; i >= 0; --i) {
+            result.set(i, n, DIV._computeIntervals(result.get(i, n), DUAL._computeIntervals(result.get(i, i))));
+            for (j = i - 1; j >= 0; --j) {
+                il.isEndStepsWithException();
+                result.set(j, n, SUB._computeIntervals(result.get(j, n), DUAL._computeIntervals(MUL._computeIntervals(result.get(j,i), result.get(i, n)))));
+            }
+        }
+    }
+
+    private ListMatrixIntervals getSolutionColumn(ListMatrixIntervals result) throws Exception {
+        ListMatrixIntervals output = new ListMatrixIntervals(1);
+        final int col = result.columnSize()-1, row = result.rowSize();
+        for(int r=0;r<row;++r) {
+            il.isEndStepsWithException();
+            output.add(result.get(r,col));
+
+        }
+        return output;
+    }
+
+}

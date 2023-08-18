@@ -1,0 +1,293 @@
+ICE examples
+Ver 1.0
+Turin 31st January 2014
+
+By Simone Pernice 
+pernice@libero.it 
+http://simonepernice.freehostia.com
+
+The following is a collection of ICE examples. Most of them come from real world calculation, other are there to show some particular function. The examples are provided in order to show the basic ICE functionalities.
+
+
+
+>>> Basic examples
+Shows ICE grammar
+
+Expression: 1+2,3+4
+Answer: 3,7
+
+Expression: 1+2,3+4;5*5
+Answer: 25
+Note: 1+2,3+4 was computed but the result is lost
+
+Expression: a = 1 .. 100;
+Answer: No answer returned
+Note: the variable "a" contains the result.
+
+Expression: a
+Answer: (1, 2, 3, ............, 100)
+
+Expression: a = 0, a = a +1
+Answer: (0, 1)
+Note: A variable named a with value 1 is created and can be used in the next operations
+
+Expression: ($f, $x) = '2*x' 
+Answer: 'f'
+
+Expression: f (2), ($f, $x) = '3*x', f(2)
+Answer: 4, 'f', 4
+Note: Once a function is defined it is not updated until next operation
+
+Expression: f 4
+Answer: 12
+
+Expression: ($f, $x) = '2*x'; f(4) 
+Anwer: 8
+Note: After every ";" the strings are re-examined for literals become functions and vice versa.
+
+
+>>> Current on a Resistor
+Shows engineer notation and interval properties
+
+If you want to know how much current a 3.3V generator sources across a 10kohm resistor just write "3.3/10k" (note the answer is in "u" (micro-Ampere 10^-6)). In the real world your generator would have a tolerance (3% for example) as well as your resistor (5%), the actual current will be "3.3%3/10k%5". If you need to use the current later just write "i=3.3%3/10k%5" or use "answerLast" to get the last value or "answer???" where instead of ??? write the answer number you need to reuse.
+
+
+
+>>> Body Mass Index
+Shows interval properties
+
+The BMI is the body mass index. It is the weight divided by the square of the height. While it is simple to know its own height with accuracy the weight changes a lot during a day. For example if a person has a height of 1.72 meters and a weight in the range between 69 and 71 Kg its BMI is "intervalExtremes (69_71/1.72^2) == (23.3, 23.9)". It means any BMI is between 23.3 and 23.9. How you can see it is quite forward to get the range of the calculation in just one step.
+
+
+>>> Painting a Room
+Shows interval properties, function plot and Monte Carlo simulation
+
+Let us say you want to repaint the walls of your living room completely messed up by your children. You need to compute how many paint cans you need to buy. The equation is quite simple (note in the equation I deliberately avoided to add twice the room width and length to avoid the risk to compute a wider solution interval):
+
+"paintCans = 2 * (roomWidth + roomLength) * roomHeight / (paintLitersPerCan * paintEfficiency)"
+
+where: 
+
+"paintEfficiency" is how many square meters of surface can be painted with a liter of paint.
+
+The problem here is that usually we do not have a long enough meter to measure the room width and length, it is much simpler to count the number of steps to go through it (1 step is about 1m, let us say from 0.9 to 1.1m). More over the paint provider usually declares a paint efficiency range.
+
+Let us put below the data:
+
+"roomWidth" = 6 (from 5.4 m to 6.6m)
+"roomLength" = 4 (from 3.6 m to 4.4m)
+"roomHeight" = 3 (it is assumed correct because its tolerance is much smaller than the other pieces)
+"paintEfficiency" = from 0.7 to 1.3 square meters per liter (1 liter per square meter in average)
+"paintLitersPerCan" = 40 (it is assumed correct because its tolerance is much smaller than the other pieces)
+
+To compute the average result just put average values in the initial equation. We get: "paintCans = 2*(6+4)*3/(40*1) ==1.5" paint cans, which means two unless you are able to buy just half of a can.
+
+Are you satisfied with that result? I am not. What if I have underestimated something? As every engineer would check what happens in the worst case, which means 1.1m step and efficiency of just 0.8. Again just substituting those values in the initial equation, we get: "paintCans = 2 * (6.6+4.4)*3/(40*0.7) = 2.36". That is really interesting: in the worst case I would miss 0.36 cans, it makes sense to buy three cans to avoid to go back to the hardware shop to buy one more (in the worst case).
+
+More happy with the result now? I am not completely satisfied, I am asking my self: what if in the best case I need just 1 can? In that case probably I need more accurate data because the result range would be too wide. Eventually we get: "paintCans = 2*(5.4+3.6)*3/(40*1.3) = 1.04".Which means two cans.
+I am satisfied, I have to buy at least two cans, but I may need one more. 
+
+Here how to make all those calculation in just a couple of steps on ICE: " 2 * (5.4_6.6+3.6_4.4) * 3/(40*0.7_1.3) == 1.7%39", "intervalExtremes(lastanswer) ==  (1.04, 2.36)".
+
+If you want to paint the ceiling as well as the walls, just add it to your equation: 
+
+"paintCans = ( 2 * (roomWidth + roomLength) * roomHeight + (roomWidth * roomLength) ) / (paintLitersPerCan * paintEfficiency)"
+
+To evaluate that on ICE just write: "intervalExtremes ((2 * (5.4_6.6+3.6_4.4) * 3 + 5.4_6.6 * 3.6_4.4 )/(40*0.7_1.3)) == (1.41, 3.40)". That means 4 cans in the worst case. However in the last equations the variables roomWidth and roomLength was repeated twice. It may have produced a bigger solution then required. To check if a smaller interval exists, just define the function where roomWidth and length are variable (because they are duplicated):
+
+"($paintCan, $W, $L) = '(2 * (W+L) * roomHeight + W * L ) / ( paintLitersPerCan * paintEfficiency)' " 
+
+and run it through the ICE linear and random function scanner: 
+
+"intervalExtremes(functionScanRandom($paintCan,  5.4_6.6, 3.6_4.4)) == (1.416, 3.39)", 
+"intervalExtremes(functionScanLinear($paintCan,  5.4_6.6, 3.6_4.4)) == (1.412, 3.394)". 
+
+Since the answers are almost the same than the first equation, it means there was no interval expansion.
+
+4 cans is a conservative number because it is the worst case. It is a very good answer if there are law implication as in the design of an appliance. It for sure provides enough paint cans for the room. However with ICE it is quite simple to make a statistical analysis of the problem. First of all we create a random variable for each interval (supposing uniform distribution). It is used statisticRandomListAsFunction which requires a function as pdf. As function is used the uniform one sampled 100 times between itself plus 1%: 
+
+rrw = statisticRandomListAsFunction($statisticDistributionUniform, roomWidth, $x, 100, roomWidth%1)
+rrl = statisticRandomListAsFunction($statisticDistributionUniform, roomLength, $x, 100, roomLength%1)
+rpe = statisticRandomListAsFunction($statisticDistributionUniform, paintEfficiency, $x, 100, paintEfficiency%1)
+
+Then we can compute again our equation with new random variables:
+
+rpc = (2*(rrw+rrl)*roomHeight+rrw*rrl)/(paintLitersPerCan*rpe)
+
+rpc will contain all the results of each experiment performed, to see its probability distribution function just run this command:
+
+rpcpdf = statisticFrequencyBinNormalized(100, rpc)
+
+
+Eventually look how ICE plots the varianle rpcpdf on its "PlotDisplay" window. Open the plot window pushing CTRL + P. Then select the drawing rpcpdf, enable visible and joined and push the FIT button. It is possible to see the probability distribution is significantly higher than 0 in the range between 1.4 and 3.3, which we already know from previous analysis. However in the diagram it is possible to see a maximum probability about on 1.8 and the distribution is above 0.5 between 1.6 and 2.6. To measure some point just click on them with SHIFT and mouse left button: they will be collected on the main window input text field.
+
+To have a direct correlation with the probability it is possible to plot the integration of the distribution probability. First of all a new function must be created by the statisticAnalisys coming from Montecarlo:
+
+$rpcpdfF := rpcpdf
+
+Then it is possible to create the integration function as:
+
+irpcpdf = calculusIntegrateFunction($rpcpdfF, 100, 1_4)
+
+From the last drawing it is possible to see with 2.7 cans the probability is higher than 90%. Therefore 3 cans should be enough for the room.
+
+The full code for the previous analysis follows below:
+
+roomWidth = 5.4_6.6
+roomLength = 3.6_4.4
+roomHeight = 3 
+paintEfficiency = 0.7_1.3 
+paintLitersPerCan = 40
+systemUseGroup('statistic')
+rrw = statisticRandomListAsFunction($statisticDistributionUniform, roomWidth, $x, 100, roomWidth%1)
+rrl = statisticRandomListAsFunction($statisticDistributionUniform, roomLength, $x, 100, roomLength%1)
+rpe = statisticRandomListAsFunction($statisticDistributionUniform, paintEfficiency, $x, 100, paintEfficiency%1)
+rpc = (2*(rrw+rrl)*roomHeight+rrw*rrl)/(paintLitersPerCan*rpe)
+rpcpdf = statisticFrequencyBinNormalized(100, rpc)
+$rpcpdfF := rpcpdf
+systemUseGroup('calculus')
+irpcpdf = calculusIntegrateFunction($rpcpdfF, 100, 1_4)
+
+
+>>> Smith trigger thresholds
+Show equations solving 
+
+Sometime it is takes time to solve an equation although it is just a linear one if it has several terms. equationFindRoot can find the solution with trial and error strategy in few tens for us.
+
+For instance suppose you have a battery linked to a Smith trigger and you want to find the commutation levels. The battery through partition ru, rd goes to + input operational. It has a feedback resistor rf from its output and +. Its output is an open collector linked to rpu with goes to voltage supply p3v3. The - input is linked to vref. 
+
+The following facilities are provided in ICE (engineer group):
+
+- the parallel between two resistors is computed by r1 in parallel to r2 = r1 +/ r2 = 1/(1/r1+1/r2) 
+- the series is +: r1 in series to r2 = r1 + r2
+- the voltage partition between  r2 and ground, when r2 is supplied by r1 an Vbatt is Vbatt * partition (r2, r1)
+
+The commutation levels are from low to high when + becomes bigger than - and viceversa. Since the output comes back into the input the thresholds are different. 
+
+With ICE it is enough to apply the sincle effects to the + input and then solve the equation with find root.
+
+systemUseGroup ('ENGINEER')
+
+rd = 1k
+ru = 4k
+rf = 100k
+rpu = 10k
+vref = 1
+p3v3 = 3.3
+
+To find the transition h -> l the Shmitt trigger output is floating.
+
+($vplushl, $vbatt) = 'vbatt* engineerPartition(rd +/ (rf + rpu), ru) + vcc * engineerPartition (ru +/ rd, rf + rpu)'
+
+equationFindRoot ($vplushl, 0_10, vref)
+
+and we get 4.916
+
+To find the transition l -> h the Shmitt trigger output is shorted to GND.
+
+($vpluslh, $vbatt) = 'vbatt* engineerPartition(rd +/ rf , ru) '
+
+equationFindRoot ($vpluslh, 0_10, vref)
+
+and we get 5.04
+
+
+
+>>> Bike ratiow
+Show reactive expressions
+
+I am going to buy a new crankset and cassette for my bike. There are several options among which it is possible to choose. The difference is basically in the number of theets of the wheels.
+
+There are two (front) cranksets. The following expression stores the theeth for each wheel:
+
+crankset48 = (              48,             36,             26 )
+crankset42 = (              42,             32,             22 )
+
+And three possible (back) cassettes. The following expression stores the theeth for each wheel:
+
+cassette36 = ( 12,14,16,18,21,24,28,32,36)
+cassette32 = ( 11,12,14,16,18,21,24,28,32)
+cassette28 = ( 11,12,13,14,16,18,21,24,28)
+
+I have a 700mm wheel, run from 80 to 100 crank revolutions per minute, I wonna go to 50km/h in down-hill and up to 7km/h in up-hill.
+
+To check all the possible combinations it would be required to find a function with based on crankset and cassette would provide the speed for each speed. However to write a so long expression is error-prone. It is simpler to compute 1 case step by step with reactive expression and then let ICE recalculate the result when input changes.
+
+Let's begin with a crankset and a cassette:
+
+$crankset  = crankset48
+$cassette = cassette36
+
+Then define the equation to compute the speed. For each crank revolution the back wheel will make the given number of revs:
+
+wheelRevs === '(crankset :: (0,0,0,1,1,1,2,2,2))/cassette'
+
+I am supposing to use the faster front gear only on the three fastest back gears and so on. It does not make sense to use all the possible combinations because several seepd would be duplicated and the chaing can be damaged.
+
+Now lets store the number of revolution per minute:
+
+rev = 80
+
+And than compute the speed:
+
+speed === 'PI*700m/1k*rev*60*wheelRevs'
+
+After every entry I get the equation answer. The last one was:
+
+speed = (          42.223,         36.191,         31.667,         21.112,         18.096,         15.834,          9.802,          8.577,          7.624 )
+
+
+To check the speed with a different crankset, just write:
+
+$crankset = crankset42
+
+Automatically ICE recompute the reactive expression affected by that change. The last one recomputed is the speed:
+
+Reactive Expression Triggered> speed === 'PI*700m/1k*rev*60*wheelRevs'
+
+> speed = (          36.945,         31.667,         27.709,         18.766,         16.085,         14.074,          8.294,          7.257,          6.451 )
+
+It is steel too fast, let try with a smaller cassette:
+
+$cassette = cassette32
+
+And ICE automatically computes:
+
+> speed = (          40.304,         36.945,         31.667,         21.112,         18.766,         16.085,          9.676,          8.294,          7.257 )
+
+and eventually the last option:
+
+$cassette = cassette28
+
+> speed = (          40.304,         36.945,         34.103,         24.127,         21.112,         18.766,         11.058,          9.676,          8.294 )
+
+The last one is too fast in up hill.
+
+The best choice is:
+
+$cassette = cassette32
+
+And with 100 revolution would give a fastest speed of:
+
+rev = 100
+
+> speed = (           50.38,         46.181,         39.584,         26.389,         23.457,         20.106,         12.095,         10.367,          9.071 )
+
+The full code is available below:
+
+systemUseGroup('ENGINEER')
+crankset48 = (              48,             36,             26 )
+crankset42 = (              42,             32,             22 )
+cassette36 = ( 12,14,16,18,21,24,28,32,36)
+cassette32 = ( 11,12,14,16,18,21,24,28,32)
+cassette28 = ( 11,12,13,14,16,18,21,24,28)
+crankset  = crankset48
+cassette = cassette36
+wheelRevs === '(crankset :: (0,0,0,1,1,1,2,2,2))/cassette'
+rev = 80
+speed === 'PI*700m/1k*rev*60*wheelRevs'
+$crankset = crankset42
+$cassette = cassette32
+$cassette = cassette28
+$cassette = cassette32
+rev = 100

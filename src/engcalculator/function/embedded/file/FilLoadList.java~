@@ -1,0 +1,66 @@
+/*
+ *     ICE (Interval Calculator for Engineer) is a programmable calculator working on intervals.
+ *     Copyright (C) 2009  Simone Pernice
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package engcalculator.function.embedded.file;
+
+import engcalculator.domain.DomainList;
+import engcalculator.domain.DomainIntervalLiteral;
+import engcalculator.expression.Expression;
+import engcalculator.function.CalculusException;
+import engcalculator.function.prefix.FunctionPrefix;
+import engcalculator.interval.ListIntervals;
+import java.io.File;
+import java.io.FileInputStream;
+
+/**
+ *
+ * @author Simone Pernice <pernice@libero.it>
+ */
+public class FilLoadList extends FunctionPrefix {
+    private final static DomainList DOMAIN = new DomainList (new DomainIntervalLiteral());
+    private final static String[] EXAMPLE = {"slex = (statisticRandom(listClone(10, 1_6)));diffuseCumulate ('+', slex - fileLoadList(fileSaveList('savelisttest',{slex})))"};
+    private final static String[] RESULT = {"0"};    
+
+    public FilLoadList() {
+        super("file", "LoadList", (byte) 1, DOMAIN, false, true, "... loads an ICE expression (usually a list) from an ASCII text file whose name is given as input. Since it expects an ICE expression as input it can be very slow to execute. It can be used to get the data saved with savelist or to get data from other program structured as list. It may load every kind of expression like the file .ice saved from the console. To load data with high speed brute force algorith use: fileLoadPointMatrix or fileLoadCsvPointMatrix if it is saved in CSV format.", EXAMPLE, RESULT);
+    }
+
+    @Override
+    public ListIntervals _compute(ListIntervals input) throws Exception {
+        ListIntervals result;
+        try {
+            File workingFile = new File (input.getFirst().getName());
+
+            FileInputStream fis = new FileInputStream (workingFile);
+
+            int c;
+            StringBuilder data = new StringBuilder ();
+            while ((c = fis.read()) != -1)
+                data.append((char) c);
+
+            fis.close();
+
+            result = new Expression(data.toString(), null).evaluate(null);
+
+        } catch (Exception e) {
+            throw new CalculusException ("It was not possible to load the file: "+e.getMessage());
+        }
+        return result;
+    }
+
+}

@@ -1,0 +1,51 @@
+/*
+ *     ICE (Interval Calculator for Engineer) is a programmable calculator working on intervals.
+ *     Copyright (C) 2009  Simone Pernice
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package engcalculator.function.embedded.flowControl;
+
+import engcalculator.interval.IntervalFlowControl;
+import engcalculator.interval.Interval;
+import engcalculator.domain.DomainList;
+import engcalculator.domain.DomainIntervalReal;
+import engcalculator.function.embedded.logic.LgcBooleanInterval;
+import engcalculator.function.prefix.FunctionPrefixSingleInputSingleOutput;
+import engcalculator.interval.workFlow.WorkFlow;
+
+/**
+ *
+ * @author Simone Pernice <pernice@libero.it>
+ */
+public abstract class FlcPrefixFunction extends FunctionPrefixSingleInputSingleOutput {
+    private final static DomainList DOMAIN = new DomainList (new DomainIntervalReal());
+    private final WorkFlow iftrue, iffalse;
+
+    public final static String HELPMAIN = " The condition checked is that the inputs is true (== 1). This function is not supported by compiled function. The return value of this function is automatically removed from the result list.";
+
+    public FlcPrefixFunction(String name, String help, String[] examples, String[] results, WorkFlow iftrue, WorkFlow iffalse) {
+        super("flowControl", name, DOMAIN, false, true, help+HELPMAIN, examples, results);
+        this.iftrue = iftrue;
+        this.iffalse = iffalse;
+    }
+
+    @Override
+    public Interval _computeIntervals(Interval input) throws Exception {
+        if (LgcBooleanInterval.i2ib(input)==LgcBooleanInterval.TRUE) return new IntervalFlowControl(  input, iftrue);
+        return new IntervalFlowControl(input, iffalse);
+    }
+    
+}

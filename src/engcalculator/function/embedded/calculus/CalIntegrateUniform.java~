@@ -1,0 +1,44 @@
+/*
+ *     ICE (Interval Calculator for Engineer) is a programmable calculator working on intervals.
+ *     Copyright (C) 2009  Simone Pernice
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package engcalculator.function.embedded.calculus;
+
+import engcalculator.function.embedded.diffuse.DifSumUp;
+import engcalculator.interval.ListIntervals;
+
+/**
+ *
+ * @author Simone Pernice <pernice@libero.it>
+ */
+public class CalIntegrateUniform extends CalIntegrator {
+    private static final DifSumUp SUM_UP = new DifSumUp();
+
+    private final static String String HELP = "... ('f', nofsectors, interval) integrates the function f in the given interval split in the required number of sectors and evaluating the function in the middle of them.\nThe interval is split in the given number of intervals and the rectangular areas are computed and summed. This function is kept for historical reason and for the integral function, use Integrate.";
+    private final static String[] EXAMPLE = {"$sin, 100, 0_PI"};
+    private final static String[] RESULT = {"2"};
+
+    public CalIntegrateUniform() {
+        super("calculus", "IntegrateUniform", HELP, EXAMPLE, RESULT);
+    }
+
+    @Override
+    public ListIntervals _compute(ListIntervals input) throws Exception {        
+        return SUM_UP._compute(computeIntegrateFunction (input));
+    }
+
+}

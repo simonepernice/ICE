@@ -1,0 +1,1400 @@
+Here follows the list of changes which carry to the ICE version that you are using. 
+
+
+Let me add just few words about myself. I begun programming at the age of 9 thanks to my cousin Marco, who let me play on his Commodore VIC20 computer. My dream program to build would always been to develop a tool to carry out calculations. However at that time the BASIC implementation on my Commodore 64 was quite poor to develop something so complex. Growing up I discovered first Derive then Mathematic which I loved for their symbolic manipulation calculus capabilities. However at university I understood the symbolic manipulation is usually not useful in real world computations. That was the time I moved to Octave. Which is the best numeric computation software I know with huge amount of extension packs available. Then I discovered I can make much simpler computation on my day by day job using intervals instead of real values. That was why I developed a package for octave (called SIMP) which bring interval mathematics capability. However it uses infix notation and matrices to represent intervals, it is useful but really cumbersome and slow to use. That is why I developed this calculator which works naively on intervals. It is called ICE (Interval Calculator for Engineer) and it is really cool! I am really proud of it!!! It is developed in Java just because I need to use it at home (where I run Ubuntu on my laptop) and at work (where I use a different operative system provided by my company). I really like Java for its simple grammar and huge amount of libraries, however I really hate its slowness. If I had used ICE just at home I would had preferred to code it in a language compiled on the machine processor.
+
+
+Eng Calculator Changes
+
+
+11/08/2009
+
+
+1. + Add to literal the option to behave as interval as well: variable&function will be literal and interval at the same time making in simpler adding function:
+1. interval pure getString = null
+2. literal extends Inteval: getString = the literal, the interval may be
+1. An actual interval (for variable)
+2. A NAN for messages and function
+1. Add variables with introduction (explaining how to use help) and about
+2. Add "about" string visualization at start up (showing to see introduction)
+3. Improve function and variables help using common an explanation and an example
+4. Can make sense to add some statistical information on list (average, variance, number of elements, ...)?
+5. Use a nice icon for the program and for the about box
+6. Add some help in the console for the keys short cut
+
+
+12/08/2009
+
+
+1. + Create NamedInterval which behaves like Interval and Literal
+2. + Create NamedIntervalList which behaves like IntervalList plus a name
+3. Add variables with introduction (explaining how to use help) and about
+4. Add "about" string visualization at start up (showing to see introduction)
+5. Improve function and variables help using common an explanation and an example
+6. Can make sense to add some statistical information on list (average, variance, number of elements, ...)?
+7. Can make sense to add function for getting elements of a list.
+8. Use a nice icon for the program and for the about box
+9. Add some help in the console for the keys short cut
+
+
+13/08/2009
+
+
+1. + Use late binding function instead of literal to solve expression like: setvar(a,2),a+a
+2. + Add terminal symbol ';' to avoid output
+3. + For Infix functions with 1 or more argument suggest '(' as well
+4. + Add on console when push enter the fix of brackets number then get the expression
+5. + Add ESC to clear input field
+6. Add abs, sign, module, partition, dB power and amplitude function
+7. Add statistical functions for list (average, variance, number of elements, max, min)
+8. Add function for set/get an element of a list.
+9. Add comparison, iteration and conditional operators
+10. Add numerical integration and differentiation
+11. Add conversion constants: (inches, feed, yard to meter; pounds, once to Kg; year, day, minute to second; knot, mi/h, km/h, ft/h to m/s; )
+12. Add most used physical constants: http://physics.nist.gov/cgi-bin/cuu/Category?view=html&Frequently+used+constants.x=81&Frequently+used+constants.y=28
+13. Add variables with introduction (explaining how to use help) and about (on the author an license)
+14. Add "about" string visualization at start up (showing to see introduction)
+15. Improve function and variables help using common an explanation and an example
+16. Use a nice icon for the program and for the about box
+17. Add some help in the console for the keys short cuts
+18. Add draw graphics option
+19. Add option to save and load the functions from and to a text file
+20. May have sense to add right associativity for function like '^'???
+
+
+14/08/2009
+
+
+1. + Fix text completion: '(x+2 is completed like '(x+2')
+2. + Fix Increase the room of input text because with scrolling bars the text is not visible
+3. + Fix TAB does not work in the middle of an expression
+4. - Add separator between output and input (preferred to keep this way out)
+5. 6. Add more clever error report which usually does not have the information on where the error is found
+7. + Change set the priority on addFunction instead of doing it in the function in order to simplify the addition of low priority function (which now requires to change the priority of all other functions at higher priority)
+8. Fix the use of '+' to add Strings, use StringBuffer.append to avoid memory waste
+9. + Fix arccos(2) which does give exception
+10. - Fix implement terminals ',' as infix function instead of adding appropriate parser rules (would give issues because automatically the single interval is expanded to list when applied to another component for ',')
+11. Fix implement terminals ';' as infix function instead of adding appropriate parser rules (check if  ';' would work out because it starts from list when try to compute a new piece of exception)
+12. + Move the Tokenize code in Token as static and the parser code in Parser static
+13. Add abs, sign, module, dB power and amplitude function
+14. Add statistical functions for list (average, variance, number of elements, max, min)
+15. Add function for set/get an element of a list.
+16. Add comparison, iteration and conditional operators
+17. Add numerical integration and differentiation
+18. Add conversion constants: (inches, feed, yard to meter; pounds, once to Kg; year, day, minute to second; knot, mi/h, km/h, ft/h to m/s; )
+19. Add most used physical constants: http://physics.nist.gov/cgi-bin/cuu/Category?view=html&Frequently+used+constants.x=81&Frequently+used+constants.y=28
+20. Add variables with introduction (explaining how to use help) and about (on the author an license)
+21. Add "about" string visualization at start up (showing to see introduction)
+22. Improve function and variables help using common an explanation and an example
+23. Use a nice icon for the program and for the about box
+24. Add some help in the console for the keys short cuts
+25. Add draw graphics option
+26. Add option to save and load the functions from and to a text file
+27. May have sense to add right associativity for function like '^'???
+
+
+17/08/2009
+
+
+1. +Fix when a variable contains a list it is not possible to use it without ' to set again the variable while it may be possible checking for the name of the intervalList
+2. +When a new function is defined it should only accept already defined variables plus its parameters instead it accepts also literal not yet defined. Moreover can make sense to compile the parameters. ParameterTkn.
+
+3. +Add more clever error report which usually does not have the information on where the error is found
+4. Fix the use of '+' to add Strings, use StringBuffer.append to avoid memory waste
+
+5. -Fix implement terminals ';' as infix function instead of adding appropriate parser rules (check if  ';' would work out because it starts from list when try to compute a new piece of exception). Not possible because it has different working principle
+
+6. +Add settolerance, setvalue, abs, sign, module, dB power and amplitude function
+7. +Add statistical functions for list (average, variance, number of elements, max, min)
+8. +Add function for set/get an element of a list.
+9. +Add comparison operators
+10. Add iteration and conditional operators
+11. +Add numerical integration and differentiation
+12. Add conversion constants: (inches, feed, yard to meter; pounds, once to Kg; year, day, minute to second; knot, mi/h, km/h, ft/h to m/s; )
+13. Add most used physical constants: http://physics.nist.gov/cgi-bin/cuu/Category?view=html&Frequently+used+constants.x=81&Frequently+used+constants.y=28
+14. Add variables with introduction (explaining how to use help) and about (on the author an license)
+15. Add "about" string visualization at start up (showing to see introduction)
+16. Improve function and variables help using common an explanation and an example
+17. Use a nice icon for the program and for the about box
+18. Add some help in the console for the keys short cuts
+19. Add draw graphics option
+20. Add option to save and load the functions from and to a text file
+21. +Add: may have sense to add right associativity for function like '^'?
+22. Add: may have sense to extends list to matrix and add the matrix operations?
+
+
+02/09/2009
+
+
+   1. Fix the use of '+' to add Strings, use StringBuffer.append to avoid memory waste
+   2. +Fix when a function is defined all its sub functions (variables and function) should be linked statically
+   3. Add the option to compute the variables as dependent
+   4. Add iteration and conditional operators
+   5. +Add conversion constants: (inches, feed, yard to meter; pounds, once to Kg; year, day, minute to second; knot, mi/h, km/h, ft/h to m/s; )
+   6. +Add most used physical constants: http://physics.nist.gov/cgi-bin/cuu/Category?view=html&Frequently+used+constants.x=81&Frequently+used+constants.y=28
+   7. Add variables with introduction (explaining how to use help) and about (on the author an license)
+   8. Add "about" string visualization at start up (showing to see introduction)
+   9. Improve function and variables help using common an explanation and an example
+   10. Use a nice icon for the program and for the about box
+   11. Add some help in the console for the keys short cuts
+   12. Add draw graphics option
+   13. Add option to save and load the functions from and to a text file
+   14. Add: may have sense to extends list to matrix and add the matrix operations?
+
+
+07/09/2009
+
+
+   1. Add the option to compute the variables as dependent
+   2. +Fix the logspace does not take the extremes but 10^extremes
+   3. +Add self check using examples
+   4. Add iteration and conditional operators
+   5. +Add variables with introduction (explaining how to use help) and about (on the author an license)
+   6. +Add the option to insert a multi-string input. Solved retokenizeing input after ;
+   7. +Add "about" string visualization at startup (showing to see introduction)
+   8. +Improve function and variables help using common an explanation and an example
+   9. +Use a nice icon for the program and for the about box
+   10. Add some help in the console for the keys short cuts
+   11. Add draw graphics option
+   12. Add option to save and load the functions from and to a text file
+   13. Add: may have sense to extends list to matrix and add the matrix operations?
+   14. +Add directed interval for basic operations
+
+
+17/11/2009 version 0.91
+
+
+   1. -Add the option to compute the variables as dependent (that does not make sense thinking to the worst case calculation)
+   2. Add iteration and conditional operators
+   3. +Add variables with version
+   4. Attach documents with explanation on intervals and program history
+   5. Add some help in the console for the keys short cuts
+   6. +Add draw graphics option
+   7. Add option to save and load the functions from and to a text file
+   8. +Add matrix multiplication and linear simultaneous equation solving
+   9. +Add function to append matrix to each other (may be ','???)
+   10. +Fix command without arguments do not accept empty brackets
+   11. Change '-' should have lower priority then ^
+   12. +Add function to concatenate and translate matrix
+   13. Fix sin does not work at 2 pi
+
+
+30/11/2009 version 0.92
+
+
+   1. Add iteration and conditional operators
+   2. Attach documents with explanation on intervals and program history
+   3. Add some help in the console for the keys short cuts
+   4. Add option to save and load the functions from and to a text file
+   5. Change '-' should have lower priority then ^
+   6. Fix sin does not work at 2 pi
+   7. +Add automatically update a drawing on X, Y, Joined and Visible change, label focus lost partially done
+   8. +Change update button in clean and new
+   9. +Add selecting Y will automatically set the label with its name and visible
+   10. +Change tick to pass through integer number
+   11. +Change Fit Scale to write a small number of decimal
+   12. +Change the drawing variable should be taken fresh from the calculator to be updated
+   13. +Fix sometime the pen is thick, try with minimum instead of average of x and y ratios
+
+
+4/12/2009 version 0.91
+
+
+   1. Add iteration and conditional operators
+   2. Attach documents with explanation on intervals and program history
+   3. Add some help in the console for the keys short cuts
+   4. Add option to save and load the functions from and to a text file
+   5. Change '-' should have lower priority then ^
+   6. +Fix sin does not work at 2 pi (that is due to computational error on the displacement)
+   7. +Add function for constant space (not required it is enough using linspace on a scalar) and for building diagonal matrix
+
+
+8/12/2009 version 0.92
+
+
+   1. +Add iteration and conditional operators
+   2. Attach documents with explanation on intervals and program history
+   3. Add some help in the console for the keys short cuts
+   4. Add option to save and load the functions from and to a text file
+   5. Change '-' should have lower priority then ^
+   6. +Check trig function there are two parameters not used
+   7. -Change incspace should use an interval as extremes, no way
+   8. Add the option to use a third variable to set the color
+   9. -Change probably constructor Matrix of Matrix is not required, was required
+   10. +Add get (int, int) to intervalList to avoid casting
+   11. +Add shortcut for drawing and re size buttons which are not visible
+   12. +Used thread to execute calculation in order to avoid stopping the console
+   13. Add function to set auto increment of interval to ensure inclusion and to set the width of number for matrix and list
+   14. +Change gives error for variable and function not initialized (for literal, they are not stored in answer)
+
+
+14/12/2009 version 0.92
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Add some help in the console for the keys short cuts
+   3. Add option to save and load the functions from and to a text file
+   4. Change '-' should have lower priority then ^
+   5. Add the option to use a third variable to set the color
+   6. Add function to set auto increment of interval to ensure inclusion and to set the width of number for matrix and list (for the second it can be printmode changed in order to accept a shorter list of parameters using only the last one)
+   7. -Fix repeat next while does not provide an answer, the behaviour is correct
+   8. +Fix the X text file is smaller than others and buttons alignment
+   9. +Change the strategy to increase the expression: not increase only if: the list is composed by 1 element which is named or the list is named.
+   10. -Change Expression in Question. Expression makes more sense
+   11. -Split the numbering for question and answers do not like the idea it seems awkward
+   12. +Add to the help of repeat functions they work only if used as last statement
+
+
+15/12/2009 version 0.92
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Add some help in the console for the keys short cuts
+   3. Add option to save and load the functions from and to a text file
+   4. Change '-' should have lower priority then ^
+   5. Add the option to use a third variable to set the color
+   6. Add function to set auto increment of interval to ensure inclusion and to set the width of number for matrix and list (for the second it can be printmode changed in order to accept a shorter list of parameters using only the last one)
+   7. +Fix stop function which reports an error erroneously
+   8. +Change the way to stop the thread since "stop()" is deprecated
+   9. Add function to "read" and "write" color code
+
+
+30/12/2009 version 0.93
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Add some help in the console for the keys short cuts
+   3. Add option to save and load the functions from and to a text file
+   4. Change '-' should have lower priority then ^
+   5. Add the option to use a third variable to set the color
+   6. +Add function to set auto increment of interval to ensure inclusion and to set the width of number for matrix and list (for the second it can be printmode changed in order to accept a shorter list of parameters using only the last one)
+   7. +Add function to "read" and "write" color code
+   8. +Change trig to work on directed intervals
+
+
+1/1/2010 version 0.94
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Add some help in the console for the keys short cuts
+   3. Add option to save and load the functions from and to a text file
+   4. Change '-' should have lower priority then ^
+   5. +Add the option to use a third variable to set the color
+   6. +Add function ## to set the number of rows for a matrix
+   7. +Change Use column matrix to draw to drastically simplify the drawing window
+   8. +Change move the zoom option of the drawing windows in a new window
+
+
+3/1/2010 version 0.94
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Add some help in the console for the keys short cuts
+   3. Add option to save and load the functions from and to a text file
+   4. Change '-' should have lower priority then ^
+   5. +Fix function definition gives error
+   6. +Fix an expression starting by ; gives error
+   7. Add surface plot
+   8. +Change surfaceplot, standardplot, parametricplot should skip wrong values OR let function work on list providing NAN when the operation is not valid?
+   9. +Add buttons to scroll up and down between visible functions
+   10. +Change cancel button is not visible
+   11. Add sizerow and sizecolumn function
+   12. Simultaneous equation solver should return the vector of solution
+   13. Change ":" logic use interval to describe row/columns instead of lists
+   14. Add :: to get rows or columns from a matrix
+   15. Change use "#" to set row or columns of a matrix without extra function ##, which may require a lowering in priority of # respect to _, remove ##
+   16. Let function definition to return a literal with the function name in order to define function inline for findroot, plot, etc.
+   17. Fix when option window is showed it does not update the controls (like axes and ticks)
+   18. Add explanation on engineer notation for number formatting (multipliers)
+
+
+
+
+5/1/2010 version 0.94
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Add some help in the console for the keys short cuts
+   3. Add option to save and load the functions from and to a text file
+   4. Change '-' should have lower priority then '^'
+   5. +Add surface plot
+   6. +Add sizerow and sizecolumn function
+   7. Simultaneous equation solver should return the vector of solution
+   8. +Change ":" logic use interval to describe row/columns instead of lists
+   9. +Add :: to get rows or columns from a matrix
+   10. +Change use "#" to set row or columns of a matrix without extra function ##, which may require a lowering in priority of # respect to _, remove ##
+   11. +Change function definition to return a literal with the function name in order to define function inline for findroot, plot, etc.
+   12. +Fix when option window is showed it does not update the controls (like axes and ticks)
+   13. Add explanation on engineer notation for number formatting (multipliers)
+   14. +Fix version is misspelled
+   15. +Change simultaneous equation solving method should be used for intervals
+   16. +Add multiple lines input management supported only by console
+   17. Change the examples that are self meaning
+   18. Fix gauss elimination if possible
+   19. +Add option to set color by value or by tolerance
+
+
+6/1/2010 version 0.94
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. +Add some help in the console for the keys short cuts: added menu
+   3. +Add option to save and load the functions from and to a text file
+   4. Change '-' should have lower priority then '^'
+   5. +Simultaneous equation solver should return the vector of solution
+   6. Add explanation on engineer notation for number formatting (multipliers)
+   7. Change the examples that are self meaning
+   8. Change gauss elimination for interval if possible
+   9. +Fix  q=5;standardplot('sin',q,0_2*pi) does not work: it was retokenize how changed 'sin' in the actual sin
+   10. +Fix delete (pi) gives internal error
+   11. Extends ==, > and < to literals?
+   12. +Send the commands to the interpeter separately instead of all in once
+   13. Add packages to collect functions on smaller groups
+   14. +Fix = do not work on list with literals
+   15. +Fix variable can store literal to be extracted as variable as well
+
+
+9/1/2010 ver 0.94
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Change '-' should have lower priority then '^'
+   3. Add explanation on engineer notation for number formatting (multipliers)
+   4. Change the examples that are self meaning
+   5. Change gauss elimination for interval if possible
+   6. +Extends ==, > and < to literals?
+   7. +Add packages to collect functions on smaller groups
+   8. +Fix (sinc, x ) = sin x/x, (sinc3d, x, y) = sinc x + sinc y does not work
+   9. +Change use a function returning two values for a parametric plot
+   10. +Add a bar showing the color change due to its hue in drawing window
+   11. +Add a time function to report the current time in ms for calculus time measure
+   12. +Change the tolerance should follow the print rules as per the value for the multipliers
+   13. Add compiled expression for function
+   14. Add code to detect deleted variables from drawings
+   15. Add square bracket to insert matrix?
+
+
+13/1/2010 ver 0.94
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Change '-' should have lower priority then '^'
+   3. Add explanation on engineer notation for number formatting (multipliers)
+   4. Change the examples that are self meaning
+   5. Change gauss elimination for interval if possible
+   6. Add compiled expression for function
+   7. +Add code to detect deleted variables from drawings
+   8. +Fix if change anything in drawing window without a drawing
+   9. +Add square bracket to insert matrix rows to be joined by comma?
+   10. +Fix extremes(partition(50K_180K,10K)) > 1
+   11. +Change power to work with negative exponent
+   12. +Add a warning if the same interval or variable appear more the once in the expression (only for variable which is easier at the moment)
+   13. Change the parser may work out everything (also ;) without the use of sub Expression
+   14. Change the parser may workout parenthesis without the use  of parenthesis
+   15. Add a function for better case examination
+
+
+31/1/2010 version 0.95
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+   3. Add explanation on engineer notation for number formatting (multipliers)
+   4. Change the examples that are self meaning
+   5. Change Gauss elimination for interval if possible
+   6. Add compiled expression for function (that requires a change in the parser to avoid terminals symbols)
+   1. -Change the parser may work out everything (also ;) without the use of sub Expression (too work, requires the introduction of a new type of function and token)
+   2. -Change the parser may workout parenthesis without the use  of parenthesis (too work, requires the introduction of a new type of function and token)
+   3. +Change create a common variable arguments abstract 'compute' at function level
+   1. Add a function for better case examination
+   2. Add complex intervals
+   3. +Add extra newline on warning for the duplicated variables
+   4. +Get change flow command in every place
+
+
+
+
+15/2/2010 version 0.95
+
+
+   1. Attach documents with explanation on intervals and program history
+   2. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+   3. Add explanation on engineer notation for number formatting (multipliers)
+   4. Change the function examples that are self meaning
+   5. Change Gauss elimination for interval if possible
+   6. Add compiled expression for function
+   7. Add a function for better case examination
+   8. Add complex intervals
+   9. +Fix help does not work any longer (it makes a kind of recursive not ending call).
+
+
+16/3/2010 version 0.95
+
+
+   1. +Attach documents with explanation on intervals and program history
+   2. +Add explanation on engineer notation for number formatting (multipliers) 
+   3. +Add more examples to show how the program works
+   4. +Add '+-' operator for absolute tolerance
+   5. +Fix self check does not work on compiled function
+   6. Add domain check at function level
+   7. Change the function examples that are self meaning
+   8. +Add compiled expression for function
+   9. Add complex intervals
+   10. +Min_Max printout mode should be avoided for scalar value
+   11. Add a function for better case examination
+   12. Change Gauss elimination for interval if possible
+   13. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+
+
+21/3/2010 version 0.96
+
+
+   1. Add domain check at function level
+   2. Add domain to functions
+   3. Change the function examples that are self meaning
+   4. Add complex intervals (expand standard intervals with getImaginaryLeft and getImaginaryRight that always return 0, then extend to complex interval which provide the complex part facility)
+   5. Add a function for better case examination
+   6. Change Gauss elimination for interval if possible
+   7. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+   8. +Add deleteall to clear all the variables and functions
+   9. Check findroot(('f','x')='x+2',-5_5) gives an actual interval as solution?
+   10. +Add labels on ticks in the draw window
+   11. +Add automatic extension to saved file name
+   12. +Fix literal may become variable or function after retokenize but the opposite does not happen due to a deletion inside an expression before a retokenize
+   13. +Change function labels should be overwritten
+   14. +Change scale fit should be rounded to the same digit of interval
+   15. +Change the story paragraph on about should move to history because it is too long
+   16. +Fix why the compiled function ('ntcr',t)_='10k*e^(3900/(275+t)-3900/(275+25))' does not work
+
+
+
+
+21/3/2010 version 0.97
+
+
+   1. Add domain check at function level
+   2. +Add domain to functions
+   3. Change the function examples that are self meaning
+   4. Add complex intervals (expand standard intervals with getImaginaryLeft and getImaginaryRight that always return 0, then extend to complex interval which provide the complex part facility)
+   5. Add a function for better case examination
+   6. Change Gauss elimination for interval if possible
+   7. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+   8. Check findroot(('f','x')='x+2',-5_5) gives an actual interval as solution?
+   9. +Fix disable the debug from compiled function
+   10. +Add find root target so that instead of f(x)=0 can be solved f(x)=5 without redefining f(x)
+   11. Add function interpolation definition
+   12. +Fix functions applied to lists should not stop if an error is found, they should just skip it
+   13. +Check strings spelling with Unix script and aspell
+
+
+
+
+9/5/2010 version 0.98
+
+
+   1. +Add domain check at function level
+   2. +Change the function examples that are self meaning
+   3. Add complex intervals (expand standard intervals with getImaginaryLeft and getImaginaryRight that always return 0, then extend to complex interval which provide the complex part facility)
+   4. Add a function for better case examination
+   5. Change Gauss elimination for interval if possible
+   6. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+   7. +Check findroot(('f','x')='x+2',-5_5) gives an actual interval as solution? The behaviour is corret it just depends on the epsilon inside findroot
+   8. +Add function interpolation definition
+   9. +Change about screen to be more clear on console builder and engCalc builder
+
+
+
+
+18/5/2010 version 0.99
+
+
+   1. +Add complex intervals (expand standard intervals with getImaginaryLeft and getImaginaryRight that always return 0, then extend to complex interval which provide the complex part facility)
+   2. Add a function for better case examination
+   3. Change Gauss elimination for interval if possible
+   4. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+   5. +Add global timeout and epsilon definition
+   6. +Check the feature description (cumulative description command is wrong)
+   7. +Add GPL license version
+
+
+28/5/2010 version 0.991
+
+
+   1. +Change basic arithmetic operations to work on complex interval
+   2. Add auto loading functions class
+   3. Add a function for better case examination
+   4. Change Gauss elimination for interval if possible
+   5. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+
+
+13/6/2010 version 0.992
+
+
+   1. -Add auto loading functions class (I do not found a way to check for all the class available in the jar. It would be possible to create a little application to create a proper java file before compilation, however the effort for that task seems much higher then its benefit, therefore I discarded the idea)
+   2. +Change brackets should be supported by virtual method so that also compiled function may use square brackets
+   3. Check if it is possible to use function to create loop instead of standard instructions
+   4. Add a function for better case examination
+   5. Change Gauss elimination for interval if possible
+   6. Change '-' should have lower priority then '^' (that requires a big change in the parser, hard to implement)
+   7. +Fix edit -> suggest
+   8. +Change "fit scale" in option
+   9. +Add feature and other details in the help window
+   10. +Add an internal function to be recalled instead of [] in order to support square also in compiled function
+   11. +Add real and imaginary functions
+   12. +Change extends Abs to complex number and avoid sqrt and sqr when the input number is a pure imaginary
+   13. +Change use StringBuilder instead of StringBuffer which is more efficient in case of single thread
+   14. +Change use negative argument size to indicate the minimum amount of required values: 3 means exactly 3 arguments, 0 means no argument, -5 means at least 5 argument or more
+
+
+
+
+27/6/2010 version 0.993
+
+
+   1. +Check if it is possible to use function to create loop instead of standard instructions
+   2. Add a function for better case examination
+   3. -Change Gauss elimination for interval if possible (in my opinion it is NOT possible due to a*(b+c) is a sub set of ab+ ac.
+   4. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   5. +Add if function (but it is no suitable for recursion because it evaluate all its arguments)
+   6. +Add returnthisif function which would not evaluate the false argument, it can be used in recursion
+   7. +Change the name to make Engineer Calculator more recognizable: suggestion ICE (Interval Calculator for Engineers)
+   8. +Add licence information
+   9. +Add zoom dragging left mouse button on the finction panel and center into the middle of diagonal drawed
+   10. +Add move dragging center mouse button on the finction panel
+   11. +Add unzoom dragging right mouse button on the finction panel and centering and center into the middle of diagonal drawed
+   12. +Add zoom on a specific zone with CTRL button pushed
+   13. +Add FFT direct and inverse
+   14. +Add function to plot simple list of data without the X data to play with fft results
+   15. +Add support for recursion in function declaration (which understand its name before end of declaration)
+   16. +Add multi variable optimization algorithm
+   17. +Check parametric plot
+   18. +Add complex phase function can be useful with complex result of a FFT
+   19. +Check delete does not work
+   20. +Change helpexact into exacthelp (more grammatically correct)
+   21. +Check '::' the syntax does not seem good to get the first column and check if seno=dataplot(abs(fft(standardplot(('f',x) =' 5 *cos (2*x) + 5 *sin (35*x)', 128,0_2*pi)::1_-1))); would work with new version
+   22. +Change improve self check to control also literal result
+   23. +Add recursive function (which internally would pass itself as a parameter to avid error during the parse step)
+   24. +Check if function 'not' can be updated to '!!', done and added xor as !!
+   25. +Check compiled function  ('f',x)_='2*abs x+1*abs(5*x)' gives f(1) = 11 instead of 7; try also ('f',x)_='20/abs x+10/abs(5*x)' where the operations are not symmetrical (/ vs. *)
+   26. +Fix when a function is defined it is taken the global variable value instead of the parameter value. i.e.: x=2; ('f','x')='2*x'; would always produce 4  as answer
+   27. +Add license to be readable by the user
+   28. Fix improve istruction to be usable by people it needs more example
+   29. +Change arithmetic functions on point interval may retur directly the valuse, that would increase a lot the execution speed: (done only where a significant execution speed increase is foreseen)
+
+
+27/6/2010 version 0.994
+
+
+   1. Add a function for better case examination
+   2. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   3. Fix improve 'istruction' explanation to be usable by people it needs more examples
+   4. Change update history file
+   5. +Add a funtion to show the type of an expression and error exception to check the domain in the user function
+   6. +Add an andup, orup functions 
+   7. +Add postcard or donation to about text
+   8. +Change the icon in about screen, use a nice piece of ICE (isn't it cool???)
+   9. +Change fft to work also on matrix formatted for plotting adding a nicer example
+   10. +Fix the matrix column joiner is not useful it is mostly covered by the list builder
+   11. -Check interval functions there are two instruction which behave closely (abs and module), nothing to do they make different stuff
+   12. +Add at boot console should load and execute a configuration file (like startup.ice) if found
+   13. +Add on domain error what is the type which was found
+   14. +Fix help without argument does not show all the help, it may be used help ('')
+   15. +Fix change file extension to ICE
+   16. +Check if a variable is defined and a function with the same name is defined later the variable is not deleted, it makes a mess
+   17. +Fix if a file is already present ICE should ask before overwrite it
+   18. +Change let to # the option to delete the matrix format
+   19. -Fix if fft input is not a 2 column matrix it should be converted like it was a list (it is more coherent to work with list)
+   20. +Add in help the list of commands you can get from help('')
+   21. +Add option to overwrite system functions renaming them with old
+   22. +Add a function to load and save variables from file
+
+
+4/7/2010 version 0.995
+
+
+   1. +Add a function for better case examination (random and linear function scan)
+   2. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   3. Fix improve 'istruction' explanation to be usable by people it needs more examples
+   4. Change update history file
+   5. +Change review about text there are too many repetitions
+   6. +Change update the features file
+   7. +Change review interpeter workflow to simplify it
+   8. +Add a help feature to show all the functions in aplhabetical order
+   9. +Add a cast function (not required it is possible to get left, right, real and immaginary parts)
+   10. +Fix fromcolor as supported domain gives ")"
+   11. Change the boolean operations should be three (or four) values logic?
+   12. +Use ICE.jar as compiled name
+
+
+9/8/2010 version 0.996
+
+
+   1. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   2. Fix improve 'istruction' explanation to be usable by people it needs more examples
+   3. Change update history file
+   4. +Change the boolean operations should be three values logic?
+   5. +Add montecarlo tool
+   6. +Add search tool for console instructions
+   7. +Check what goes wrong on montecarlo and sinc
+   8. +Delete beansbinding from library list, it is not required
+   9. +Added extra functions for matrix by JAMA (only for point interval): invert, eigenvalue, eigenvector, determinant, power, division
+
+
+12/8/2010 version 1.0
+
+
+   1. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   2. +Fix improve 'istruction' explanation to be usable by people it needs more examples
+   3. +Change update history file
+   4. +Change check every function working on interval and complex to compute simpler if the input is a point interval or real interval
+   5. +Changed _ % +- and +| to provide a point / real interval according to the input: i.e.: 2_2 return point interval 2 instead of a real interval 2_2, 3+|0 returns point interval 3 instead of complex interval 3 + I*0
+   6. +Fix check for duplication works on full expression while it should work on sub-expressions
+   7. +Add check for duplicated variables in function definition on the help
+   8. +Change delete behaviour when overwrite of internal function is enabled
+
+
+22/11/2010 version 1.01
+
+
+   1. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   2. +Add a static function in the Calculator class for warning printing. All the duplicated variables warnings were changed to use that new feature (in expression and function definition). That avoids a strange behaviour like a function with warnings cannot be used as input to other functions.
+
+
+12/12/2010 version 1.1
+
+
+   1. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   2. +Chang the help of compiled function to show the source code (after it was executed once). That required to modify Expression creating a CompiledExpression which extends it.
+   3. +Add closerpreferreds to find the couple of closer values to the given one
+   4. +Add function for integer: ceiling, floor, gcd, lcm, factor, base conversion, bitor, bitand, bitxor, bitnot, mod, divide, . 
+   5. +Change rearrange the packetization to follow subject instead of prefix and infix
+   6. +Fix closerpreferreds(15%2) gives just one answer
+   7. +Change focus travel policy to selec the input text are first
+
+
+16/12/2010    version 1.1.1
+
+
+   1. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   2. +Fix the oldlastanswer oldoldlastanswer
+   3. +Change help instruction window to be resizable
+   4. +Add option to run a new kernel and stop the old thread
+   5. +Change delete to run on a list of variables
+   6. +Changed plot and plot option window to improve functionalitis
+   7. +Add check on domain and expected function size
+   8. Fix stepsaccuracy(1000000,1n) does not work
+   9. +Fix factorization when called with argument <= 1
+   10. +Change expansion to list provides a warning instead of a literal
+
+
+
+
+20/2/2011    version 1.2
+
+
+   1. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   2. Fix stepsaccuracy(1000000,1n) does not work
+   3. Add a function to build, add or subtract a couple of sets seen as list of elements
+   4. Add button to save graph (binary, picture)
+   5. +Add graph overlapping curves with different color
+   6. Fix starting and ending point of a joined graph are not vertical
+   7. +Fix ICE file filter does not show folders
+   8. +Add "lastanswer" if an expression begins with a space followed by a not char neither digit
+   9. +Fix if save without any history rise io exception
+   10. +Fix the startup does not appear in the history (which may be wrong if it is saved and later startup with a different autoexec)
+
+
+6/3/2011   version 1.2.1
+
+
+   1. Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement)
+   2. +Fix stepsaccuracy(1000000,1n) does not work
+   3. +Add a function to build, add or subtract a couple of sets seen as list of elements
+   4. Add button to save graph (binary, picture)
+   5. Fix starting and ending point of a joined graph are not vertical
+   6. +Fix ctrl+down goes to the wrong line
+   7. +Fix OK default button in draw options
+   8. +Add sequence to check the intersections a list of adiacent intervals: direction(sequence('&', the intervals))
+   9. +Fix split valtol in a couple of functions val and tol, it makes much more sense and are more useful
+
+
+
+
+27/3/2011   version 1.3.0
+
+
+   1. - Change '-' should have lower priority then '^' (that requires a big change in the parser because all infix functions has intrisecally higher priority than infix ones, hard to implement), keep as it is, the required change at the parser is too complex
+   2. +Add button to save graph (binary, picture)
+   3. - Fix starting and ending point of a joined graph are not vertical: It is more clear to have the tick curve orthogonal to its direction
+   4. +Add a warning when the user quit the program without saving
+   5. +Fix 1/10k%1==100...u%1000m
+   6. +Fix '..' does not work on inverse list i.e.: 4 .. 1 == (4,3,2,1)
+   7. +Change tobase and frombase works on integer intervals and extending on their list tails
+   8. +Change create more orthogonal classes for domains
+
+
+4/4/2011   version 1.3.1
+
+
+   1. +Fix after Expression127 it goes to Expression-128
+   2. +Fix 'derivate' help is not present
+
+
+6/8/2011   version 1.3.2
+
+
+   1. +Fix unidimensional bars are not drawen on plot panel (because they have a 0 height)
+   2. +Fix ':=' expects point interval as values, produces exception while running if that is not the case
+   3. +Change read history and instruction directly from their text files instead of embedding the strings in the code
+
+2/9/2011   version 1.3.3
+
+   1. +Change added ']' bracket automatic close
+   2. +Fix internal structure looking out of boundaries in list or matrix
+   3. +Change improved instructions, infix function help and matrix domain report printing
+   4. +Change added option to embed ' as \' inside a literal to write expression like  ('integratef', x) = 'integrate(\'f\',100,0_x)'
+
+11/9/2011   version 1.3.4
+   1. +Change matrix builder to works with literals (useful for example to place base conversion on a matrix)
+   2. +Fix Option window prints 0 as value when the number is below 0.0001 (due to java.decimalFomat method), that prevents to fit a diagram with small extension.
+   3. +Change list and matrix builder which now can accept literal as well as others domain
+
+4/10/2011   version 1.3.5
+    1. +Change split the history in single lines although the input is a multi line statement
+    2. +Add a window to edit the history
+    3. +Change move all the commands related to the history to its window
+    4. +Add findintersection function to get the intersection between a couple of thick functions
+    5. +Add search window
+    6. +Add remove suggestions when the output is printed
+    7. +Change search and help windows do not have title
+    8. +Change Search window does not have ICE icon
+    9. +Change Search algorithm should be moved to search window
+    10.+Change Search on the help should be changed in a key to recall the window
+    11.+Fix Search does not work on main window
+
+31/10/2011   version 1.3.6
+    1. +Add rising and falling taus calculation for one-pole system
+
+17/4/2012   version 1.3.7
+    1. +Add a limit to the maximum list elements printed
+    2. +Change printmode and stepaccuracy to set only some of the values using negative number for the onces not changing
+    3. Add +standard deviation, +percentile, zscore, tscore, gaussian, student, gamma, +correlation, ANOVA, distributions, +(multi) linear regression
+    4. +Fix :: gives Java Exception when the index is out of range and change row, column order to get a single row or column vector
+    5. +Add main square bracket to define matrix to allow expression like a = [[1,2],[3,4]] which otherwise (without main []) would be (a = [1, 2]), [3, 4]
+    6. +Add function to brute-force load elements of data like csv, and a function to save matrix to csv file
+    7. Add function to run montecarlo on every type of distribution
+    8. +Add a function to create an inverse function working on intervals
+    9. +Add a frequency function
+   10. Add a name scope for the less used functions (set, matrix, statistic, ...)
+   11. +Change join min and max in one single function to improve code efficency and reuse
+   12. +Add cross pictures to show points in plot window
+   13. +Add ? to extract pieces of a list with giver characteristics, it is the only available funcion to discard a value
+   14. +Change MonteCaro to use frequencybin function created
+   15. +Change a function can be called with parentesys: 'sin()' is equivalent to 'sin' when passed as argument
+   16. +Add range function to retieve the width of an interval
+   17. +Fix : to extract elements from matrix computed as list when they are point interval
+   18. +Change :: to run on a list of elements to build new matrix
+   19. +Fix example for infix functions were wrong when ; was used
+   20. -Avoid because would slow ICE while it is designed for the best efficienciy: Add the use of compiled function for the simplest ICE internal functions
+   21. Add basic help 
+   22. +Change grid and axes to be drawn in xor mode
+   23. +Add multiple assignments on = : ('a','b')=(1,2), ('a','b')=(b,a)
+   24. +Changed extended : to matrix, intervals to extract from list, negative number for the end of a list. Removed :: not more required because a clone of :
+   25. +Add $ as shortcut for literals ''
+   26. +Changed reduced the number of explanation on the type of input when the domain is not correct, updated type function accordingly
+   27. +Fix the tab to show available functions on the console did not work properly on infix functions
+   28. +Add feature to set type of pont on the graph to several shapes: plus, cross, square, diamond, circle, triangle
+   29. +Add round to round floating number
+   30. +Add ordinary differential equation first order solver
+   31. +Add #= to call a function with a subset of parameters, it let able to use a function with several variables as input of a function which requires less parameters
+   32. Fix Find does not work properly on windows
+   33. +Add a new :: able to extract every type of sub matrix
+   34. +Change : cannot extract any longer vector from a matrix
+
+20/9/2012   version 1.3.8
+    1. Add +standard deviation, +percentile, zscore, tscore, gaussian, student, gamma, +correlation, ANOVA, distributions, +(multi) linear regression
+    2. Add function to run montecarlo on every type of distribution
+    3. Add a name scope for the less used functions (set, matrix, statistic, ...)
+    4. Add basic help 
+    5. Fix Find does not work properly on windows
+    6. +Add spreadongroup for matrix
+    7. +Add shortcut Alt+ to several buttons on the windows
+    8. +Changed :: to behave as : on list, removed :. Drastically simplified the :: code using a help class ElementIterator to simplify the ::= creation
+    9. +Add ::= to set a value on a list or matrix
+    10.+Fix loadpointmatrix and loadcsvmatrix
+
+20/9/2012   version 1.3.9
+    1. Add +standard deviation, +percentile, zscore, tscore, gaussian, student, gamma, +correlation, ANOVA, distributions, +(multi) linear regression
+    2. Add function to run montecarlo on every type of distribution
+    3. Add a name scope for the less used functions (set, matrix, statistic, ...)
+    4. Add basic help 
+    5. Fix Find does not work properly on windows
+    6. +Add new parametrizable randomgenerator used by all other functions
+    7. -Add "?=" to create random variables with arbitrary pdf
+
+22/8/2013   version 1.3.10
+    1. Add zscore, tscore, +gaussian, student, gamma, ANOVA, +distributions (normal, uniform, triangular)
+    2. +Add function to run montecarlo on every type of distribution
+    3. +Add a name scope for the less used functions (set, matrix, statistic, ...)
+    4. Add basic help 
+    5. Fix Find does not work properly on windows
+    6. +Make basic functions faster if working on point interval
+    7. +Add automatic '(' and '\'' closure when they are opened
+    8. +Change auto completation of function with TAB adds also closing bracket
+    9. +Change exp to support complex number
+    10. +Change functionList help to load the help from a file which is automatically generated by a tool in order to use groups and still have the full help
+    11. +Change function sub argument definition to work wethever the unknow are placed 
+    12. +Change the features to show the new group architecture
+
+6/9/2013 version 1.4.0
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. Fix Find does not work properly on windows
+    4. Change the instruction to show the new group architecture
+
+15/9/2013 version 1.4.1
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Fix Find does not work properly on windows
+    4. Change the instruction to show the new group architecture
+    5. +Fix help shows the wrong function name (without group) in the examples
+    6. +Change ENG in useGroup load also equations and plot
+    7. +Add RandomListAsFunction
+    8. +Fix RandomGenerator does not reset the seed
+    9. +Change MinMax to work on functions plot (matrix with x and y column)
+   10. +Change name of cumulative group to diffuse
+   11. +Change UseGroup to get an error if the identifier given does not exist
+   12. +Add SHIFT+LEFT to report the pressed point on the input text area as [x, y]
+
+15/9/2013 version 1.4.2
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    4. +Change the instruction to show the new group architecture
+    5. +Fix history still not perfectly workin on windows
+    6. +Fix error in normal distribution
+    7. +Change lastAnswer in answerLast for coherence with naming
+    8. +Change TAB works also if before last string there is an infix operator
+    9. +Change the opening brackets is not added if the function name begins by '$'
+   10. +Fix an error on statisticDistributionUniform input interval domain
+   11. +Added Grow and Shuffle to make new list easier
+   12. +Added equationActractiveFixedPoint to find solution of x=f(x) equations
+
+30/9/2013 version 1.4.3
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Change systemUseGroup changed to work on lists
+    4. +Change help function help
+    5. +Change informationAbout
+    6. +Change renamed regressions to statisticRegressionLinear and statisticRegressionGeneral
+
+6/10/2013 version 1.4.3
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Fixed problem with preprocesso limiting its action: now can only replace spaces between (number/letter) with '*'
+    4. +Changed preprocesso disable (now called type help) will disable also automatic pressure of )]'
+    5. +Added defineLambdaGetName and defineLamdaFunction to create un-named functions useful to plot
+
+6/10/2013 version 1.4.4
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Fix bug in lambda function not having always same names
+    4. +Fix pushing on windows cross does not ask to save the history if chaged
+
+7/10/2013 version 1.4.5
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Fix close window code to ask to save
+    4. +New kernel go on with answer numbering instead restarting from 1
+    5. +added Load append and changed load to start a new session
+
+17/10/2013 version 1.4.6
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Fix engineerPreferred does not work close to 100
+    4. +Added input text editor to work with big input files
+    5. +Fix InputTextAid does not add * within apices '...'
+
+17/10/2013 version 1.4.7
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Fix minor bugs in history and input windows
+    4. +Fix bug cumulative does not accept a list made of a single element
+    5. +Fix bug on TAB gives String out of index when input is void
+    6. +Change $ can manage also infix operators
+    7. +Add calculusSeriesProduct and calculusSeriesSum
+    8. +Fix defineLambdaFunction '...+$var' does not get var
+    9. +Fix defineLambdaFunction does not work is the same var is defined several times
+
+26/10/2013 version 1.4.8
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3. +Added sublist with {} to contains matrix or list, that simplify the procedure of passing parameters to function which takes a list
+    4. +Changed :: and ::= to work with sublist
+    5. +Changed the use of getLeft was replace with getValue which makes more sense where possible (it was used getLef when intervalPoint does not exist for efficiency purpose)
+    6. +Changed with new {} syntax the following functions: listShuffle, listGrow, SaveCSVPointMatrix, SaveList, StatisticFrequencyBin..., spreadOnGroups
+    7. +Fix LoadPointMatrix did not work if the first element found has some character
+    8. +Changed self check
+    9. +Changed renamed function to have the same name of ICE embedded function
+    10.+Changed spreadOnGroups to work natively with matrix 
+    11.+Changed consol autocompletition to detect {, and avoid self closure when typing in the middle of a sentence
+    12.+Changed UseGroup to self detect wrong group placement
+    13.+Changed Move if and keepIfTrue from logic to program
+    14.+Changed subArgumentDefinition to define Alias function
+    15.+Changed defineLambdaFunction to operate directly on argument if given, otherwise returns the lambda name as before
+
+3/11/2013 version 1.5.0
+    1. Add zscore, tscore, student, gamma, ANOVA
+    2. Add basic help 
+    3.+Add SelfCheck domain number
+    4.+Change added ListIntervals the function distance (for self check of list containing IntervalList) and isBuildByPointInterval (for check of the internal structure for duplicated intervals)
+    5.+Add more examples on IntervalList for ::, ::= and ','
+    6.+Add listDistance
+    7.+Add most matrix function to work on sub-list of matrices
+    8.+Change matrixSort to work with sub-matrix
+    9.+Add listCombination to provide all combinations from a list of sub-list
+    10+Add listFlatten to flat a list made of sub-lists
+    11+Change renamed listContant as listClone which makes more sense
+    12+Add vector group
+    13+Add vector: scalar product, module, vector product, 
+    14+Change calculusDerivate to support partial derivation on single variable and simultaneosly on every variable
+    15+Add reactive expression
+    16 +Add +divergence, +gradient, +curl
+    17+Changed integral to work like partial derivation
+    18+Fix if a reactive expression is defined with the same name of an existing variable get null-pointer
+    19+Verify if a variable is change by making a reactive expression on it, the trigger will recompute everythin
+    20+Should not be allowed to delete a variable which is input of a reactive function to avoit its crash when triggered
+    21+Change remove that a list whould check if any of its value is a literal that was defined late
+    22+Fix FunctionSubArgumentDefinition change the input passed which may cause problem (it does on integralAdaptive)
+
+8/1/2014 version 1.5.1
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add basic help 
+    3.  Change reactive expression to work also with cyclic definition
+    4. +Fix it was not possible overwrite a reactive expression whose output was used by another reactive expression
+    5. +Fix changed reactive expression output to be more readable
+    6. +Fix a bug on reactive expression when the output variable was a list throw null pointer exception
+    7. +Fix a bug on reactive expression when a new one want to replace an old on but it was not suitable (because recursive) which would have deleted the old one
+    8. +After self-load avoid requiring to save before a new load
+    9. +Use the same path of main window for load and save graphs
+    10.+Fix graph setup save does not store x,y, c, and tck status
+    11. Change diffuse to infix even all, prefix on row and column: diffuseSpreadOnGroups change to matrixSpreadOnRows and matrixSpreadOnColumns
+    12.+Add donation windows
+    13.+Add statistic mean absolute value which is more familiar than standard deviation
+    14.+Add graph with label (instead of color grade)
+    15.+Add graph with vector
+    16.+Changed input text aid: "3 a" is completed to "3*a", while "a 3" is left as it. That lets the user to avoid an unuseful paratesys like in sin 4.
+    17.+Fix set (::=) changes array but not variables
+    18.+Fix variable and constant names were assigned without group
+    19.+Changed Moved infix function ? to list
+    20.+Added IndexOf to list
+    21.+Added literal group: split, join, toUnicode, fromUnicode, ToExpresison, FromExpression
+    22.+Added informationExamples, removed examples from instructions
+    23.+Changed help windows: removed button to use a single combo box
+    24.+Changed plot window and added label
+    25.+Add point shape shower on plot option
+    26.+Add lablel on plot option and rearranged buttons on plot 3 columns
+    27.+Add plot vectorial field
+
+
+2/2/2014 version 1.5.2
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add basic help 
+    3.  +Not pursue: the feature is not very usefull. Change reactive expression to work also with cyclic definition
+    4.  +Not pursue: the feature is self buildable with lamba function. Change diffuse to infix even all, prefix on row and column: diffuseSpreadOnGroups change to matrixSpreadOnRows and matrixSpreadOnColumns
+    5.  +Change implemented a more sophisticated loader able to load also old version of setting file (with less parameter)
+    6.  +Fix literal functions helps were wrong
+    7.  +Add vector plot, vector zoom and spacement
+    8.  +Add management of vector plot on plot window and options
+    9.  +Add X, Y, vector, color logarithm scale
+    10. +Fix logaritmic scale for X
+    11. +Change Split instruction for kernel and console creating informationInstructionsConsole and informationInstructionsKernel
+    12. +Change improved speed for derivate and integrate using a class attribute to store the function instead of passing it
+    12. +Add plotStandard Adaptive and Logarithmic
+    13. +Add examples and help for plot Standar Adaptive and Logaritmic and for new console features
+
+9/3/2014 version 1.5.3
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add basic help 
+    3.  +Change: defineLambdaGetName is able to retrieve previous assegned function name: very usefull to access twice at the same variable
+    4.  +Fix: plot adaptive stops at first error found (sin x/x going through 0)
+    5.  +Add parentesis match highlighter
+    6.  +Add only functions with several arguments are automatically followed by (, other funcions by space, constants by nothing
+    7.  +Add system function defined by ICE expression
+    7.  +Add plot bode module and plot bode phase as system function defined by expression
+    8.  +Fix update several documents
+
+6/4/2014 version 1.5.4 build 243
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  +Add basic help: done without changing the constructor, just in the code of ALL functions 
+    3.  +Fix the printing place of thick lables is overwritten by thick
+    4.  +Add variable to be added points with shift-left on screen. use shif-right to delete last and shift-center to delete first
+    5.  +Fix if the plot variable is not present revert back on the screen replacing (10^x exponent) E by e
+    6.  +Add functions defineFunctionLockSet and defineFunctionLockClear to lock and unlock a protected function. remove old overwrite function. upgrate the function help accordingly
+    7.  +Add function to define infix function
+    8.  +Change the package of system defined function by expression
+    9.  +Fix invert (I) gives error of division by 0
+    10. +Change FFT working on not power 2 groups adding DFT
+    11. +Fix defineFunctionLockClear  $PI do not work due to a problem in FunctionVariable which did not overwrite add, del Function methods
+    12. +Fix defineFunctionLockClear  does not remove locks from functions which are infix and prefix at the same time
+    13. +Fix consoleEngCalculator package and functions should be renamed as EngCalculatorConsole
+    14. +Fix when a functionDefinedByExpression is called should return the list of missing values
+    15. +Fix the help of  a functiondefindeByExpression is not nice, because part of the help comes after the the examples. 
+    16. +Change matrix sort can order also in opposite direction
+
+2/5/2014 version 1.5.5
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2. +Add optimizer on reactive expression using defineFunctionReactiveExpresison to convert a reactive expression 
+    3. +Fix it is not possible to redifine prefix function with same name of infix
+    4. +Fix changed infixFunction adding retokenize to be able to change the name of an infixFunction and use it soon after ;
+    5. +Add group on reactive expression and moved all the relative functions there
+    6. +Add reactive expression find root
+    7. +Add logic domain and used on logic functions
+    8. +Change ReactiveExpressionTrigger to choose if trigger eveything or only the function whose input changed
+    9. +Add defineFunctionReactiveExpresison to convert a reactive expression in a standard input function to be used for other purposes (findroot, etc...)
+    10. +Added domain reactiveExpression, Logic (added use for all logic functions), functionVariable
+    11. +Change every time a calculus error happens the function name originating it is showed 
+
+22/6/2014 version 1.5.6 build 258
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  +Add defineCurrentGroup to set the group of the new created function and variables
+    3.  +Add conditional group to add functions: for, if, switch, while, dowhile
+    4.  +Add improved expressione evaluation adding the function to reload parameters 
+    5.  +Add improved domain combination with logic function and, or, not
+    6.  +Change review tokenizer packge adding tknLiteralPossibleVarFunction to add a leverl of late binding in order to let expression like a=5,a+1 and ($f, $x)='5*x',f 12 functional without ';'
+    7.  +Review error messages to make them more clear
+    8.  +Changed Clear and Set Lock to work on every functions
+
+24/6/2014 version 1.5.6 build 258
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  +Changed ? to work with every type (literal as well)
+    3.  +Added defineShowAllFunctions to return the list of all functions, variables and infix function defined
+    4.  +Added literalRegularExpression Match, Split and Find to match literal for Java regular expression
+    5.  +Added GetGroup, renamed defineLambdaFunction and defineLambdaGetName
+    6.  +Added DefineGroupSearchPath
+
+5/10/2014 version 1.5.7 build 269
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  +Add factorial in the integer, it was already present
+    3.  +Add complex power and root in ICE language as not often used
+    4.  Add tutorial 
+    5.  +Add shortcut on the console (CTRL+E) to show the help of the first function on the left of the cursor
+    6.  +Add function to console to save the entire output window
+    7.  +Add integerRoundToDigit to round a decimal number to a given number of digit
+    8.  +Change increased speed of round, floor and ceiling when input is a point interval
+    9.  +Add stubs for polimofic infix and prefix functions but not used
+    10. +Add defineLambdaGetValue to get a value stored in a variable
+    11. +Add diffuseFeed to supply the same value to several prefix functions
+    12. +Fix bug on lambda functions which were not deleted if getName used to store variable
+    13. +Fix bug plot adaptive which does not stop looking for better approximation if the function is 0
+    14. +Change statisticRandomListAsFunction so that it does not require any longer the number of points (it uses plot adaptive)
+    15. +Add diffuseExpandParameters to expand some parameters of a multi argument prefix function
+    16. +Fix entering litteral 'asdfa' would not stored in a answer variable
+    17. +Change dual to work on complex interval
+    18. +Change domain of GaussElimination to work on complex (works OK) and interval (not 100%) numbers
+    19. +Added abstract class to support multiple domain functions used for functions able to work on complex, real and point intervals
+
+5/10/2014 version 1.6.0 build 269
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add tutorial 
+    3.  +Add internal measurement unit classes
+    4.  +Add measurementUnit structure for function
+    5.  +Add measurementUnit for infix function
+    6.  +Add functions to enable and disable measurement units
+    7.  +Add functions to enable and disable domain and size input check
+    8.  +Fix 1/'literal' gives error and plotStandardAdaptive if the right extreme y(xright) was not a value
+    9.  +Change measurement unit print out between apice '--' to have copy and paste from output to input workable
+    10. +Change the load of measurement unit automatically enables the measurement units
+    11. +The main frame title now shows the name of the file it is am working on
+    12. +Add setListSplit and setListJoin can be used to split an interval into point intervals and then join it back to work with complex functions where it is not possible to have the same interval just once
+    13. +Add systemSetupParameters to set parameters in a function and updated integrate, ... to use it
+    14. +Add interface for symbols with help and joined Functions and measurement unit to harmonize the help functions
+    15. +Add measurement unit define
+    16. +Add defineDelete and Lock the ability to manage measurement unit as well
+    17. +Change used iterator in plot to go through points and in infix a prefix functions to go through elements to speed up the list peformance
+    18. +Fix CTRL+ENTER always go to the end of the text but if pressed in the middle of a sentence that was wrong
+    19. +Add Jacobian
+    20. +Fixed several problem with measurement unit
+    21. +Change step accuracy and use systemSetupParameters instead
+    22. Add Hessian
+    23. +Add not-linear system equation solver
+    24. Add not-linear measurement unit
+    25. Review the code to use iterators when possible
+    26. +Add when the kernel is reloaded the default parameters should be set in all functions with memory (like print format)
+    27. +Set all the parameters (also iteration and steps) with systemSetupParameters keeping the old function just as a printer for the current status
+    28. +Add a class wich registers the default configuration so that after a kernel reboot all the functions set up are resets
+    29. +Changed removed global step-accuracy wich now is set on function basis
+    30. +Add recompile to save, load and execute
+    31. for does not work on listIntervals
+    32. +Fix review input text aid with makes error adding closing brackets
+    33. +Fix disabling input text aid should leave highlight working
+    34. +Changed Renamed exactHelp in helpExact
+    35. +Add literalFromInterval, the version fromExpression would never returns string
+    36. +Add menu to save, load and exec current history
+    37. +Add button to to save, load and exec current history in history windows
+    38. +Add button to exec current input in input windows
+    39. +Fix bug on fileSaveCsvPointMatrix does not sent return carridge after each matrix row
+    40. +Fix after push enter it was not deleted
+    41. +Add interpolation by linear and cubic spline in := with a setup Parameter
+    42. +Change set final in most of the classes to improve speed and code correctness
+    43. +Fix listSize worked only with complex intervals, now with whatever
+    44. +Fix fileSaveCsv to work on every kind of interval as well as literal
+    45. +Fix fileSave to work on list longer 100 element adding the reset on the number of elements to print before save
+    46. +Fix fileSave is based upon the ICE output is readable as input which is not the case with matrix and measurement unit
+    47. +Change input domain check as parameter
+    48. +Change for function defined by points 2 may be enough
+    49. +Changed font to be all chars with same width
+    50. +Change input size domain check transformed in a parameter removed also the setting function
+    51. +Add parameter nice print which (if disabled) shows output that can be used directly as input, it is disable during file save
+    52. Add creator of variables for linear function scan 
+    53. +Add function to reduce x, y matrix in case x interval values are partially overlapped
+    54. Add assert function to check for domain rising error
+    55. +Fix statisticReduction should join Y intervals
+    56. +Shoud be possible to insert a multiple line statement with a special character to join the whole
+    57. +Use load point matrix instead of fileLoadCsvPointMatrix is too selective it should accept different number of column and literals
+    58. +Fix diffuseExpandParameters does not join properly matrix
+    59. +Fix literalFromInterval does not work with variables and parameters
+    60. +Change file function will use the last load/open file if it not specified otherwise
+    61. +Change '+' to join literals
+    62. Add assert like internal function to manage better the errors stopping if not required
+    63. +Fix statisticInvertMeasure to use weighted average
+    64. Add subtraction of literal
+    65. Add difference of intervals in setIntervals and listIntervals
+
+
+15/3/2015 version 1.6.1 build 309
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add tutorial 
+    3.  Add Hessian
+    4.  Add not-linear measurement unit
+    5.  Change review the code to use iterators when possible (in progress...)
+    6.  Change for does not work on listIntervals
+    7.  Add creator of variables for linear function scan 
+    8.  Add assert like internal function to manage better the errors stopping if not required
+    9.  Add subtraction of literal
+    10. Add difference of intervals in setIntervals and listIntervals
+    11.+Add diagram in opposite direction for axes X and Y inverting axes min and max values
+    12.+Change: prev and next buttonsvisible should be cyclic
+    13.+Change: improve diagram auto scale and tick selection 
+    13.+Change fit does now work very well to find min and max with good rounding and simple tick
+    14 +Add in history there is be replace feature
+    15. Add case sensitive in search and replace feature
+    16. Add wildcards in search feature
+    17.+Change matrix row and column size should be named inverse: size row and size column
+    18.+Add engineerPartitionInverse
+    19.+Change engineerPartition should work on just 2 intervals and expand on several lists, seemso more useful in this way
+    20.+Change improve fileLoadPointMatrix and use parameters
+
+15/4/2015 version 1.6.2 build 310
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add tutorial 
+    3.  Add Hessian
+    4.  Add not-linear measurement unit
+    5.  Change review the code to use iterators when possible (in progress...)
+    6.  Change for does not work on listIntervals
+    7.  Add creator of variables for linear function scan 
+    8.  +Add assert like internal function to manage better the errors stopping if not required
+    9.  +Rejected: Add subtraction of literal, to complex to implement (because difference is a sum with second member inverted) with no use
+    10. Add difference of intervals in setIntervals and listIntervals
+    15. Add case sensitive in search and replace feature
+    16. Add wildcards in search feature
+    17. Add a function to run recursion on reactive expression
+    18. +Fix bug adding literal to number
+    19. +Change rising and falling taus merged in a unique comprensive function
+    20. +Change find root and intersection shouild share same name and same parameter: 'equationFind' name
+    21. +Add preferred value list
+    22. +Add preferred value scanner
+    23. +Fix reactive expression does not show m.u. when just defined: wrong m.u. management in reactive expression definition
+    24. +Fix partition and inverse partition use wrong m.u.
+    25. +Change review from and to color code to omogenize the code
+    26. +Add measurement unit to all interval functions
+    27. +Change removed brackets on measurement units in nice print mode
+
+20/5/2015 version 1.6.3 build 311
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add tutorial 
+    3.  Add Hessian
+    4.  Add not-linear measurement unit
+    5.  Change review the code to use iterators when possible (in progress...)
+    6.  Change for does not work on listIntervals
+    7.  Add creator of variables for linear function scan 
+    8.  Add difference of intervals in setIntervals and listIntervals
+    9.  +Add case sensitive in search and replace windows
+    10. Add wildcards in search feature
+    11. +Add a function to run recursion on reactive expression
+    12. +Change removed all stright calls to calculus exception defining as public in Function. Now all the errors can be suppressed
+    13. +Change removed all stright calls to measurement unit exception defining as public in Function. Now all the errors can be suppressed
+    14. +Add introduced measurement unit in all list functions
+    15. Change add measurement unit to all prefixFunction (in progress...)
+    16. +Fix inverse measurement unit are not catch like (1/V)
+    17. +Fix interval list does not support measurement units for its components
+    18. +Change when measurement unit are defined without a name i.e V/m they are print out within brackets (V/m) which is useful to print power and so on
+    19. +Fix invert does not supporte measurement unit
+
+22/5/2015 version 1.6.4 build 312
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add tutorial 
+    3.  Add Hessian
+    4.  Add not-linear measurement unit
+    5.  Change review the code to use iterators when possible (in progress...)
+    6.  Change for does not work on listIntervals
+    7.  Add creator of variables for linear function scan 
+    8.  Add difference of intervals in setIntervals and listIntervals
+    9.  Add wildcards in search feature
+    10. Change add measurement unit to all prefixFunction (in progress...)
+    11. +Fix bug in preferred when number are below 1
+    12  +Change removed all internal units with more than 1 definition because they make a lot of confusion in printing because ICE may choose the wrong ones. The user can still add them if he likes...
+
+10/8/2015 version 1.6.5 build 313
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add tutorial 
+    3.  Add Hessian
+    4.  Add not-linear measurement unit
+    5.  +Change review the code to use iterators when possible (in progress...)
+    6.  Change for does not work on listIntervals
+    7.  +Add creator of variables for linear function scan 
+    8.  Add difference of intervals in setIntervals 
+    9.  Add wildcards in search feature
+    10. Change add measurement unit to all prefixFunction (in progress...)
+    11. +Change list expansion for infix operator so that also a multi value list is expanded
+    12. +Added measurement unit writing their value directly within variables with their name
+    13. +Changed engineerPreferredValueList and engineerPreferredValueScanner so that the interval is provided as {min_max, tol} instead of the redundad {min%tol, max%tol}
+    14. +Added dynamic loader in order to load class compiled after ICE build
+    15. +Added equation value scanner for same reason it is faster than engineerPreferredValueScanner
+    16. +Change the engineerScanPreferredValues to use equationScanDiscreteValues
+    17. +Change equationScanDiscreteValues to provide all the possible matches instead of the first only
+    18. +Change frequencyBin to provide the bins externally instead of the ones build automatically inside
+    19. +Change statisticFrequencyBin to check external bins have the extremes in common
+    20. +Change equationDiscreteScanner and PreferredValueScanner to look for smaller, equals and bigger
+    21. +Added possibility of function without any argument number check 
+    22. +Added IntervalList without elements used if the equation has no field
+    23. +Fix domainCheck moved after the function arguments are split so that it is applied a the most small part
+    24. +Added diffuseExpandFunction to apply a function with variable number of args to severa intervalLists
+    25. +Changed better use of Loader with initialization (in reactive expression and mesurement units), renamed class from which everything begins
+    26. +Changed Moved multi-expression within the calculator (instead of being managed by the calculator thread which is called only by the GUI graphical console)
+    27. +Change Improved TokenList for speed avoiding the use of get(index)
+    28. +Added multipleExpression to manage loops and advanced programming
+    29. +Added debug funcions on user interface to manage advanced programming
+    30. +Change TokenList speed improved: selfCheck passed from 7 seconds to 4 seconds
+    31. +Change measurement units, only 1 unit defined for each typte, changed also the printing algorithm to better detect primitive MU versus derivate
+    32. +Added multipleLiteral expression in order to define expression with several rows
+    33. +Fix bug on domain split
+    34. +Fix bug on recurrent expception: if one rises an exception the others were not computed
+    35. +Fix bug with power and measurement unit 
+    36. +Fix big bug on expression now every expression has its instance of tokenizer otherwise if a function recall twice another function may mass its own parameters
+    37. +Add reactiveExpression definition with dependent variable
+    38. +Change matrix print, now ')' is on the next line
+    39. +Change created new storage class to store static data of each class: function prefix, infix, variable; measurementUnit; reactiveExpression
+    40. +Added context to begin and end new variable and prefix function definition (may extend to infix but they are seldom defined)
+    41. +Change search group definition moved to a self contained class stored within Function
+    42. +Created a custom jTextArea able to perform all basic ICE edit function (suggestion, auto-completition, help) 
+    43. +Used the new field for main, input and history windows (the last two required a new hint text fram)
+    44. +Added undo function to the new jTextField
+    45. +Repackaged graphic section to be more maneagable
+    46. +Fix several point of lisearSplitInterval and deletion
+    47. +Fix measurement unit issue: changed initialization order
+    48. +Fix bug with modal winwod Find and Replace
+    49. +Fix placement of JDialog windows to show within its parent
+    50. +Fix bug on measurement unit not managed by unary + and -
+    51. +Add litteralFromIntervalDetailed to show the interval structure without changing the view settings
+    52. +Add scanner for optimus value, for boolean match and for closer match
+
+5/1/2016 version 1.7.0 build 314
+    1.  Add zscore, tscore, student, gamma, ANOVA
+    2.  Add tutorial 
+    3.  Add Hessian
+    4.  Add not-linear measurement unit
+    5.  Change for does not work on listIntervals
+    6.  Add difference of intervals in setIntervals 
+    7.  Add wildcards in search feature
+    8. Change add measurement unit to all prefixFunction (in progress...)
+
+Frozen version 314. Updated history and version files. Chang e on litteralFromIntervalDetailed to avoid its warning.
+e6b359270bba49a92026f40f1eaefbc156dd6776	6-gen-2016 0.03.32	simonepernice <pernice@libero.it>
+
+Added reactive expression summary function. I noted aftare a while working on reactive expression it is simple to lose the flow of expressions
+4e04ce237085688afe06945743470ca026eacbf7	16-gen-2016 21.51.24	simonepernice <pernice@libero.it>
+
+Added function to summary all user data.
+c83722780b500c620792a59a9333817a6c873713	24-gen-2016 22.11.35	simonepernice <pernice@libero.it>
+
+Added the number of skipped function in the self check test. Fix a minor issue in EngPreferredValueScanner which was not locked.
+db437f8bc08627f623aab8b301527f12dc19fcce	25-gen-2016 9.51.19	Simone Pernice <simone.pernice@magnetimarelli.com>
+
+Improved self check output
+b7d0a4cc25a01240c9ada7267dc5c0e37f17d7f4	25-gen-2016 16.43.30	Simone Pernice <simone.pernice@magnetimarelli.com>
+
+Added listPick to takes element from a list based on index rules. Adde engineer preferred value optimizer.
+f11026783d6ea9f2a2e4d2e891ef1074e0e95106	5-feb-2016 14.36.35	Simone Pernice <simone.pernice@magnetimarelli.com>
+
+Fixed when there is an error it do not print the input expression.
+3e29b8c0ede74bd8e70317bec842a79c5e0a80d5	12-mar-2016 15.08.17	simonepernice <pernice@libero.it>
+
+Commented debug string from FscIntervalSplitLinear
+e53361eaed4deac1f0e092dad3fa73d12ec2f1e9	14-mar-2016 10.58.43	Simone Pernice <simone.pernice@magnetimarelli.com>
+
+
+Fixed still the bug when there is an error it do not print the input expression: it did not work on a multi-line statement. Fix a bug on infixFunction not reporting properly the exception.
+d4cebe5f1a9eaef2c793e2d670269450b23373bf	18-mar-2016 23.46.24	simonepernice <pernice@libero.it>
+
+Fixed bug on floor, ceiling, round and round to digit which do not accept measurement unit. Added answerGet to get an answer at given index.
+8ae37773cae5ac4eeb3def54d27cdfb154888c47	14-apr-2016 11.46.23	Simone Pernice <simone.pernice@magnetimarelli.com>
+
+Fixed bug in set difference: a ---- b exceptions if the result is null. Moreover the code is made faster. There is still a bug a ---- b does not return bug if b has element does not exists in a.
+7b50b7fe9aa4ba1ab50f7e798c0343f3945b694e	5-giu-2016 21.18.57	simonepernice <pernice@libero.it>
+
+Added matrix maker, improved list conversion speed.
+a72120423b916f9c0837a813fcfe4f3a4804b8be	8-ago-2016 0.50.42	Simone Pernice <pernice@libero.it>
+
+Added polynomial group and polynomial evaluate function.
+62eda6cd0535126087ec42b21394921980bb8b68	9-ago-2016 0.39.18	Simone Pernice <pernice@libero.it>
+
+Added polySolve to solve polynomial and PlyEvaluate was updated. Interval was fixed for complex distance and was removed complex compare.
+c16a4fb991148abb8ef9456cf52ced9319c0ccf3	11-ago-2016 1.17.24	Simone Pernice <pernice@libero.it>
+
+Added an information function to show all the functions available on a group or super group. That required modification in the group load logic adding an emulation function in which the group is not really load but just the functions name are read.
+49d97891b659aa573d430fbaf17f23e5b5e83dde	12-ago-2016 1.07.55	Simone Pernice <pernice@libero.it>
+
+Reviewed methods name to retrieve the list of functions on a group. Added polynomial multiplication.
+a7a33aff0365cb36bb8687a41d7f50d4b5babbfd	12-ago-2016 16.12.15	Simone Pernice <pernice@libero.it>
+
+Added polynomial subtraction and sum. Modified polynomial multiplication to use the sum
+a5cb61978616d795a7a26f305dda40b00b964190	13-ago-2016 16.41.02	Simone Pernice <pernice@libero.it>
+
+Added polynomial divisione. Reviewed namesdue to a collision with setList difference. Fixed polynomial sum which does not rise error when exceed the number of iterations.
+148bb815ec0b1c8fc9cd8bd68575bc78a368f2fa	15-ago-2016 1.31.55	Simone Pernice <pernice@libero.it>
+
+Added derivation and integration on polynomial. Now wording on solve by newton rapson method.
+f40322d44f494198112f27425838fd19c943ba13	16-ago-2016 16.09.34	Simone Pernice <pernice@libero.it>
+
+Added a solver based on newthon rapson method described on Wikipedia. Looked for an improvement on division between poligonals.
+0619a8e31ae165fddb54b0c16884d45ebd73d4fa	17-ago-2016 1.38.34	Simone Pernice <pernice@libero.it>
+
+Fixed bug in polynomial division. Improved newton rapshon division skipping last step. Review help of polynomial functions.
+844c6c70a282c31e58c2277c8cbd45e7f7363f17	17-ago-2016 16.04.04	Simone Pernice <pernice@libero.it>
+
+Update sqr and sqrt to work on complex point intervals. Split solveNR from the kernel algorithm to make in more general.
+16ba6da9dc96b5ec17e1d22acdd9a9c7ce42d787	19-ago-2016 16.47.00	Simone Pernice <pernice@libero.it>
+
+Added Laguerre polynomial solve algorithm. Fixed bug on multiplicaton of complex number with null pointer exception. Modified square and squareRoot to work on complex number. Reviewed newton Rapson to stop when f(x) is close to zero.
+5d54e9f7142ab21c3bb8ec57a699412bd2ada3df	20-ago-2016 15.49.21	Simone Pernice <pernice@libero.it>
+
+Fixed check the end of loop on polynomial solve to rise error on NaN.
+f8ac8d2c31aff11c6cc34ead8857f1846d97d2d8	21-ago-2016 15.41.42	Simone Pernice <pernice@libero.it>
+
+Added plynomial solve algorithm  Jenkins Traub. I found a Java port of Fortran source code by Michael A. Jenkins online. The Java port: Copyright 2013 Christian d'Heureuse, Inventec Informatik AG, Zurich, Switzerland.
+2edb95ab00900d11869fc86a4a4180d32d8d827f	24-ago-2016 15.13.00	Simone Pernice <pernice@libero.it>
+
+Added Taylor polynomial computation. Minor review on calculator: removed start thread from the constructor.
+3abda811a2c69c88ae818c5c8f78108258a1a5d7	24-ago-2016 23.25.25	Simone Pernice <pernice@libero.it>
+
+Changed SolveJT to use a list instead of an IntervalList
+fd5d6c9e8ae6d7777f400ee1d445de83e0317e27	25-ago-2016 16.18.38	Simone Pernice <pernice@libero.it>
+
+Build with latest software.
+a490082a6128a60530161e40313666adeb4787ea	2-set-2016 23.45.43	simonepernice <pernice@libero.it>
+
+Added accumulator function. It will semplifiy a lot  expressions like a = a + 3 or a = 2+a
+71bb3a202ef3cfbc4023358958cca218039ef3ca	6-set-2016 23.04.12	simonepernice <pernice@libero.it>
+
+24/9/2016
+Frozen and published latest version

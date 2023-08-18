@@ -1,0 +1,455 @@
+ICE tutorial
+Ver 1.0
+Turin 27th Augusto 2014
+
+
+By Simone Pernice 
+pernice@libero.it 
+http://simonepernice.freehostia.com
+
+
+The following is a short tutorial to the basic knowledge to use ICE. The aim of this document is to explain the basic ICE usage without providing detail on any subject. To have a deep understanding of ICE capability please have a look at the following documents:
+
+- informationInstructionsConsole explains how the console works
+- informationInstructionsKernel explains how the kernel works and what are intervals
+- informationFeature describes all the group of functions available in the kernel
+- informationFunctionList shows the help of all the funtions available
+- informationExamples shows a list of problems solved by ICE
+
+
+
+ICE is a simple calculator able to work with intervals instead of simple number. An interval is a range of possible value. It is useful in engineer design where most of the arguments are not known with good accuracy.
+
+ICE is split in two programs strictly integrated: a console and a kernel. The console is in charge to get the input from the user to the kernel and print its answer. It is split in two forms, the user insert its input on the bottom, the input and kernel output are then showed on the top. The top is also temporary used to show suggestions on the possible function (TAB) beginning with the written chars and for help on functions (CTRL+E). It has also a plot window to show graphically the results calculated by the kernel. The kernel is in charge of understanding and executing the input expression.
+
+
+The ICE kernel language has a very simple grammar. It basically knows the functions in the input expression which are called and executed. 
+
+The functions can be: 
+- infix (like +, *) which have different priorities and can be left or right associative 
+- prefix that have the higher priority than infix. 
+
+The prefix functions can have: 
+- 0 arguments (usually for variables or functions to provide information like the current time)
+- a defined number of arguments
+- a minimum number of arguments.
+
+Each function has an help which explains how to use it:
+
+ExpressionXX> help ('+')
+Shows the help on function "+". It is required to place + between apices otherwise ICE would try to execute the function +
+
+ExpressionXX> help ('sin', $cos)
+Shows the help of the functions "sin" and "cos". The symbol "$" can be used before every function in place of the apices.
+
+Everything in ICE is a list made by an ordered set of intervals (or sub-list). The basic list is made splitting the values by the infix function ",". 
+
+Most of the function automatically will work on all values provided if the input is a list:
+
+ExpressionXX> 4 / (1,2,4)
+Returns: 4, 2, 1 because 4 is automatically extended to (4, 4, 4) since the right argument is a list of three elements and then the "/" is computed on each couple of values.
+
+ExpressionXX> invert (0.1, 0.2, 0.5)
+Returns 10, 5, 2 applying the invert function to each of its input values.
+
+
+Since there are a lot of functions, they are collected in groups named in lower case like arithmetic, trigonometry, hyperbolic, etc. Usually the function name begin with the belonging group and then the function name (first character in upper case). That is useful also with TAB key useful to suggest and complete function names. The only exceptions are infix functions and the very well known functions (like sin, cos, log, etc.). Some groups are arranged together in super-groups called (in upper case): BASIC, ENGINEER, PROGRAM, ALL. The groups in BASIC are automatically loaded at start-up, ALL would load all the groups, ENGINEER the groups related to engineer field, PROGRAM the groups required to programm. See the help on systemUseGroup to have more details on how to load a group of functions. 
+
+ExpressionXX> systemUseGroup 'ALL'
+Loads all the functions available. That is useful if in doubt the required function was not loaded.
+
+The function informationFeatures show the content of every group. 
+
+Most of the functions are named with their group name followed by the function name (beginning with upper case). It is possible to push TAB button to let console suggest all the possible function or complete the current one. With PG UP and DOWN buttons it is posible to go through all the given inputs.
+
+It is possible to configure ICE kernel in several ways (for example loading groups). It is possible to create a file with the initial setup and save it to "startup.ice" file. It will be automatically loaded and executed by the consol at its startup. 
+
+The idea behind the list is to execute the same operations several times on different values, there are a lot of functions to create lists:
+
+ExpressionXX> 1, 2, 3
+Creates the basic list: 1, 2, 3
+
+It is possible to create a list of integer value among minValue .. maxValue [ .. step]
+ExpressionXX> 1 .. 6
+Returns 1, 2, 3, 4, 5, 6
+
+ExpressionXX> 1 .. 6 .. 2
+Returns 1, 3, 5
+
+The number can be entered in engineer format where after the last digit a symbol indicates the exponent (m milli stands for 10^-3, u micro stands for 10^-6, n nano stands for 10^-9, k kilo stands for 10^3, M mega stands for 10^6, G giga stands for 10^9). The output is provided in the same format. To change the output format (for example to avoid the engineer format and use scientific instead) have a look at the help of "systemPrintMode". It is possible to put that command in the startup.ice file to automatically execute it at every run.
+
+ExpressionXX> 1/10
+Returns 100m which means 100*10^-3
+
+Most of the ICE functions support interval as input value. An interval is a range of possible values. There are three functions to create intervals:
+- min _ max creates an interval between min and max
+- val +- tol creates an intervals between val - tol and val + tol
+- val % tol creates the interval val +- val/100*tol
+
+Other useful functions to create list are:
+
+ExpressionXX> listLinear (5, 1_9)
+Would create a list of 5 elements linearly spaced in the interval 1_9: 1, 3, 5, 7, 9. It works with decimal values as well. It can be used to create list of values on which run functions. listLogarithmic does the same with logarithmic space.
+
+Sometime it is required to 
+
+It is possible to create user defined variables, infix and prefix functions. Usually the user will create prefix functions and variable with the command "=":
+
+ExpressionXX> a = 5
+Creates the variable (prefix function with 0 arguments) called a. Wherever a is found it is replaced by its value:
+
+ExpressionXX> a+1
+Returns 4
+
+The variables can contain list as well:
+
+ExpressionXX> a = (1, 2, 3, 4), a+1
+Returns 1,2,3,4,2,3,4,5
+
+Since "=" priority is very low, without brackets the result would be totally different:
+ExpressionXX> a = 1, 2, 3, 4, a+1
+Returns 1,2,3,4,2
+
+Running the "help" function of the infix functions it is possible read the priority of them.
+
+Other useful function to play with list are the following. To clone a list several times:
+ 
+ExpressionXX> a = (1, 2, 3); ListClone (3, a)
+Returns 1, 2, 3, 1, 2, 3, 1, 2, 3
+
+The infix function ";" just discards what finds at its left side. It is useful to avoid to print too much output. It also recompute the input expression in case something has changed (like an infix function, ...)
+
+The element of a list can be list as well. In that case they should be content between curly brackets:
+
+ExpressionXX> a = (1,2, {1,2},3)
+ 
+It is possible to get an element from a list with "::" infix operator giving the element index. The first element has index 0. It is possible use -1 for the last element, -2 for the one before the last, .. If an interval is given all the index of the interval are retrieved. If several indexes are given they are retrieved and put in a list.
+
+ExpressionXX> a= (1,2,3,4);a :: 0
+Returns 1
+
+ExpressionXX> a :: (-1, 3)
+Returns 4, 4
+
+ExpressionXX> a :: 0_-1
+Returns 1,2,3,4
+
+It is possible to change the element of a list with the infix function  "::=" followed by the index and the new values:
+ExpressionXX> a= (1,2,3,4);a ::= (1, 1)
+Returns 1,1,3,4
+
+ExpressionXX> a= (1,2,3,4);a ::= (1, {1,2,3})
+Returns 1,{1,2,3},3,4
+
+Basically the user works with ICE running its functions. The user can made its own (prefix) functions with "=" infix function:
+
+ExpressionXX> ($average, $a, $b)= '(a+b)/2'
+Returns the literal "average" and define internally the function "average". The reason why ICE returns the name just defined is because it is usable by another functions. Several function requires a function name on which execute the computation.   
+
+To create and plot the sinc (=sin x/x) function just try the following code (load the plot group first):
+ExpressionXX> plotStandardAdaptive (($sinc, $x)= 'sin x/x', 0.1_10)
+
+The function "=" creates the "sinc" function: ($sinc, $x) = 'sin x/x' and returns its name "sinc"
+
+The function "plotStandardAdaptive" compute its argument ('sinc') on several point in the interval 0.1_10 and returns the computed value on a 2 column matrix named answerLast. All the unnamed answer are stored in a variable called answer%% (were %% is a progressive integer). Last answer is stored in the variable answerLast.
+
+Open the plot display window (CTRL-P) and select answerLast in drawing and then click on visible and on FIT button to see it. The plot display window looks for all the 2, 3 and 4 column matrix to show their graphs.
+
+Matrices are managed by ICE like standard list with an internal field which stores the number of column. To use matrix it is required to load the related group of functions with the command:
+
+ExpressionXX> systemUseGroup 'matrix'
+
+Once the functions are available it is possible to transform each list in a matrix with the infix function "#" which requires the number of columns:
+
+
+ExpressionXX> (1 .. 9) # 3
+Returns the following matrix:
+[              1                2                3  ]
+[              4                5                6  ]
+[              7                8                9  ] 
+
+Although longer it is possible to input a matrix row by row separated by square brackets:
+
+ExpressionXX> [[1 .. 3],[4 .. 6],[7 .. 9]]
+Returns the same list as before.
+
+The matrix group has several functions working on them. Most of those functions does not support intervals. Below the example on some commands available:
+
+ExpressionXX> a = [[27, 102, 103],[10 .. 8],[12 .. 14]]
+ExpressionXX> matrixDeterminant a
+
+To insert a multi-lines input use CTRL+ENTER. Each line will be computed as input separately. Use TAB to autocomplete commands, for example just write "mat" and then TAB to complete "matrix". Push again TAB to see al the possible functions beginning by "matrix".
+
+There are a lot of matrix commands, see informationFeatures to have an idea of matrix functions. Just to see a couple of functions: "**" is infix and stands for the row by column product, while matrixInvert compute the inverse matrice of the given function. It is possible to combine them in order to get the identity matrix:
+
+ExpressionXX> a = [[27, 102, 103],[10 .. 8],[12 .. 14]]
+ExpressionXX> a ** matrixInvert a
+
+Returns:
+[              1                0                0  ]
+[       -27.756a                1                0  ]
+[      -277.556a          -6.217f                1  ]
+
+Due to numerical error some cells of the matrix are not zero but very very low, a stands atto for 10^-18 and f for femto 10^-15. 
+
+ICE internally compute with floating point 64 bit, this may create some noise. It is possible to remove that noise with a function of the group integer called RoundToDigit which will turncate the output to the given number of decimal digits:
+
+ExpressionXX> integerRoundToDigit(3,a ** matrixInvert a)#3
+Returns:= ( 
+[              1                0                0  ]
+[              0                1                0  ]
+[              0                0                1  ] )
+
+Please note it is required to make a 3 column matrix because when the operator "," try to join "3" with the matrix identity it returns a list since nor the columns neither the rows match.
+
+The functions to extract and change the values of a list are available also for matrix with the only difference row and column should be provided. Since it is possible to use an interval it is simple to extract a sub-matrix from a matrix:
+
+ExpressionXX> a = [[27, 102, 103],[10 .. 8],[12 .. 14]]
+ExpressionXX> a :: (0_1, 1)
+Returns the column matrix:
+[102]
+[9]
+
+The matrices can be joined as standard list by "," which try to join horizontally if have the same number of rows and vertically if the column numbers matches. If both matches it join horizontally, if in that case the vertical join in required use ",|" which just do it:
+
+ExpressionXX> a = [[27, 102, 103],[10 .. 8],[12 .. 14]]
+ExpressionXX> a :: (0_1, 1) , a :: (1_2, 2)
+Returns:
+[            102                8  ]
+[              9               14  ]
+
+The following expression create a matrix a, then adds to its first column twice of the last:
+
+
+ExpressionXX> a = (1,2,3,8,7,6,5,8,2)#3
+Returns:
+[              1                2                3  ]
+[              8                7                6  ]
+[              5                8                2  ] 
+
+ExpressionXX> a ::=(0_-1,0, a :: (0_-1,0)+2* a :: (0_-1,2))
+Returns:
+[              7                2                3  ]
+[             20                7                6  ]
+[              9                8                2  ] 
+
+It is also possible to extract a sub-matrix:
+
+ExpressionXX> a :: (1_-1, 1_-1)
+Returns 
+[              7                6  ]
+[              8                2  ] 
+
+
+Some matrices values (also intervals) can be plot by the plot display window called within the console:
+
+- 2 column matrices are interpreted as X/Y graph. The first column is X and the second Y. 
+- 3 column matrices are interpreted as X/Y/Z graph. The Z value is plot with a colour scale.
+- 4 column matrices are interpreted as vectorial field as X0/Y0 (the vector application point) and Xv/Yv (the vector X and Y components)
+
+There are several function to create quickly those matrices to plot, they are available in the "plot" function group as seen before.
+
+Some ICE functions support the complex number (arithmetice, exp, and few more). The complex unit is called "I" so that:
+
+ExpressionXX> I*I
+Returns -1
+
+Several functions are supported for vectors. The vectors are standard list of elements.
+
+ExpressionXX> systemUseGroup 'vector'
+Loads the vector function group. 
+
+ExpressionXX> vectorModule(1,2,3)
+Will compute the module of the vector 1,2,3 which is the same of the square root of the self scalar product:
+
+ExpressionXX> sqrt ((1,2,3) *. (1,2,3))
+
+The vector group contain several useful function to work with vectorial field like: Curl, Gradient, Divergence. They operate with numerical derivation
+
+In the group of function calculus it is possible to found the numerical derivate, integration, series (summa and product) and something more. Integrate and derivate are numerical and require the interval on which operate.
+
+For example we may derivate sine function and compare to cosine:
+
+ExpressionXX> x = listLinear(50, 0_2*PI)
+ExpressionXX> cosplt = listShuffle({x}, {cos(x)})#2
+ExpressionXX> sinplt = listShuffle({x}, {calculusDerivate($sin, x%1)})#2
+ExpressionXX> errorplt = ((x#1),((cosplt-sinplt ):: (0_-1,1)))
+
+The first line compute the xes were the functions will be evaluate.
+The second line create a list made be x and cosine evaluate at x points. It needs to be a shuffle because the list are tranformed in matrix row by row and "," would join the two lists with all X before and Y after. 
+The third line will add the derivate of sine computed at x % 1 which takes the x and make them interval with 1% tolerance.
+It is possible to plot sinplt and cosplt matrix in the plotWindow to see they are almost the same.
+Eventually the difference is computed and the matrix is created to be plot. Note that matrix is made joining two column matrix so "," is enough clever to join them properly.
+
+To inputs so long expressions (with a lot of lines) it is simpler to use the input window CTRL+I. It has the same content of the input window at the bottom of ICE with the advantage of the realizability. All the input expression given are saved in the history which is visible and editable through CTRL+H. It is possible to see all the entered command in the input field with PG_UP and DOWN. When a document is saved, just the history is saved, when it will be loaded again all the expression will be computed again. If also the output provided needs to be saved there is an option on the menu to save it in text file but it can not be load again.
+
+As well as input text it is possible to save the setting of the plot window. So that the user, once executed again the calculus can show the graph exactly in the same form of before. It is also possible save the graph in png format.
+
+To insert a function write just the beginning chars and then push TAB to complete the group name. Press TAB again to see all the possible functions. Write some additional char a press TAB to complete it. Push CTRL+E to see the help of the given function. Eventually there are several function for auto-completion which automatically add missing closing brackets and more.
+
+Intervals are very good when they are small. In expression they tend to become bigger and bigger. Moreover when the same interval is used twice in an expression ICE does not know they are the same so an expression like the following:
+
+ExpressionXX> a = 1_2
+ExpressionXX> intervalExtremes (a-a)
+Returns (-1, 1)
+
+The function Extremes showes the extremes of an interval in a list. So the result is an interval between -1 and 1. That is intrinsic in interval calculation. A warning of ICE would inform the same interval has more then 1 time. In those case the basic solution is to rewrite the input expression avoiding the duplicated variables.
+
+When the user can accept just the more likely result the function group "statistic" will help. It has several statistic functions plus all the required function to make statistical analisys. It is very simple to create a statistical variable. The value of statistical variable (like an interval) is not known exactly, only its statistical distibution is known. ICE is able to fill a variable with thousands of pseude-random value with the given distribution. Then those variables can be used in the standard calculations. Eventually the "statistic" group of functions can help to show its statistical properties.
+
+ExpressionXX> a = 1_2, as=statisticRandomListAsDistribution($statisticDistributionUniform, 1_2, $x, 0_3)
+Returns a random list with Uniform distribution in the interval 1_2 captures in the interval 0_3 (since uniform it would be possible to use an interval as small as 1_2.
+ 
+as is the statistical version of a. as contains eight thousands of random number with uniform distribution in the interval 1_2. The calculation with as will be slower (requires 8 thousands of operations) but will not suffer of any interval swelling. However since the samples are limited (8 thousands although it is configurable) the result is not sure.
+
+ExpressionXX> diffuseFeed ({as-as}, $statisticAverage, $statisticMeanAbsoluteDeviation)
+Returns  0, 0
+
+Because the result has exactly 0 average and 0 MAD. diffuseFeed is a performance enhancer to feed its first intervalList to the following prefix functions. It was used because compute as-as is long because affects 16000 values.
+
+It would have been the same to use an intermediate variable:
+
+ExpressionXX> difference = as-as, statisticAverage difference , statisticMeanAbsoluteDeviation difference
+
+However that has the drawback to declare a variable not required any longer after. Note the function Average and MAD are not prefixed by $. The reason is the following: when ICE find a function name try to execute it on the next value (the brackets are required only if it has to executed on a list: cos 0 returns 0, while cos 0 , 0 returns 1, 0; to apply cos at both write cos (0, 0) which return 1, 1). So the only way to pass a function as argument to other functions is using its name as literal. Literal in ICE are strings which are not interpreted, just passed to the functions. The literal are written between apices: "'". For prefix function it is possible to use prefix $ instead of '. So to pass the sine function to plot function use 'sin' or $sin.
+
+To avoid to use difference it is possible to compute twice the same operation (which take twice the time):
+
+ExpressionXX> statisticAverage (as-as ), statisticMeanAbsoluteDeviation (as-as)
+
+Eventually there is a way to avoid to declare a temporary variable. It is based on the Lambda Name and Function. This is a way to create unnamed variable and function. It is usually used to create temporary functions but it is seldom used for variable as well:
+
+ExpressionXX> defineLambdaGetName (0) = as-as;  statisticAverage  defineLambdaGetValue -1, statisticMeanAbsoluteDeviation  defineLambdaGetValue -1
+
+Basically defineLambdaGetName create a temporary name if its input is >=0, for negative input it returns the last name created. If that name was used to store a variable, its content can be recalled by LambdaGetValue. This is quite cumbersome. Lambda are usually used to create temporary functions like the one following:
+
+ExpressionXX> plotStandardAdaptive(defineLambdaFunction('sin $x * cos $x'), -6_6)
+
+Would create a temporary function whose value is sin x times cos x.
+
+To conclude the discussion about statistic powerful see the difference between a and as:
+
+ExpressionXX> a, diffuseSpread('+-', diffuseFeed ({as}, $statisticAverage, $statisticMeanAbsoluteDeviation))
+Returns  (      1.5%33.333,   1.515%16.434 ) which show although the as is uniformly distribuited between 1_2 its tolerance is about 16% while interval calculation compute the worst case 33%.
+
+Eventually also operation on statistical value may arise to different result:
+ExpressionXX>1/a, diffuseSpread('+-', diffuseFeed ({1/as}, $statisticAverage, $statisticMeanAbsoluteDeviation))
+Returns (     750m%33.333,685.587m%16.931 ) which show the same tolerance difference as before plus a slightly lower value. In fact with interval the value is taken arbitrary in the middle of the interval. The real values are just the interval extremes.
+
+The logarithmic is supported:
+
+ExpressionXX> log 100
+2
+
+ExpressionXX> ln (E^3)
+3
+
+Also trigonometric functions sin, cos, tan and arcSin, arcCos and arcTan are available at startup. They work on radiant. To work on a different base load the 'convert' function group. It contains several conversion constant, for example convertDegreeToRadiant is the constant to multiply the radiant to convert them to degree: 
+
+ExpressionXX> sin (45*convertDegreeToRadiant)
+Return 707m
+
+Note it is possible to avoid to write the last closing brackets. As soon as ENTER is pressed ICE verify they are missing and add them. A new ENTER will go on computing. If a space is written before an infix function at ENTER pressure ICE will replace the space with answerLast.
+
+Every time the result of a calculus is not stored on a variable, automatically ICE store its in an answer variable which have a progressive number. anwerLast always contains the last answer result (so the last unnamed result). The answers are useful also to graph data. Since the data to plot has to be a named matrix, it is possible to print the relative anwerXX. It is not a good idea to print answerLast because the diagram plotted would change every time a new answer is provided (which updates answerLast).
+
+Most of the calculus performed on ICE is based on functions automatically computed on all elements of a list:
+
+ExpressionXX> (1,2,3)+(5,6,7)
+returns (               6,              8,             10 )
+
+ExpressionXX> abs(1, 3, -3, 3+ I*4)
+returns  (               1,              3,              3,              5 )
+
+In the group list there are several clever function to apply other functions to lists in smart ways:
+
+-Cumulate apply an infix function to the first two elements of a list and replace them with the result until the list has 1 element
+
+ExpressionXX> diffuseCumulate ('+', 1,2,3,4)
+Returns 10
+
+-Spread apply an infix function to all adiacent couple of element of the given list:
+ExpressionXX> diffuseSpread ('+', 1,2,3,4)
+returns (               3,              5,              7 )
+
+ICE automatically extends functions of n arguments to operate to list k*n elements. However that is not useful if prefix functions with several arguments needs to be calculated several times changing only few of its arguments and keeping constant the others. That can be achieved with ExpandParameters. It gets a prefix function and its parameter where the ones need to be calculated several times must be provided in a sub-list. It compute the result for each value and returns the list of results:
+
+ExpressionXX> diffuseExpandParameters($equationFindRoot, $sin, {-1_1,1_4,4_7}, 0)
+returns (               0,          3.142,          6.283 )
+
+equationFindRoot belongs to the equation function group where a lot of function to solve equations are available. It requires a prefix function, an interval where to look for the root and the root value we are looking for (usually is 0). Whit the syntax above it is compute 3 times keeping all the parameters constant with the exception of the intervals in which to look for the root.
+
+ICE has the basic logic functions in the group logic. The logic constant are true (=1), false (=0) and trueFalse (=0_1). Compared to boolean logic it is required to add trueFalse because the input are intervals of value and therefore some condition may be true for same value and false for others. The logical operators are the same of the C language with exception of !! which is unary not and binary XOR.
+
+ExpressionXX> systemUseGroup 'logic'
+
+ExpressionXX> true && false
+return 0
+
+ExpressionXX> true && true
+returns 1
+
+The 'comparison' group of functions contains the basic comparator functions: <, <=, >, >=, !=, == like C operators. 
+
+
+The logic is useful for conditional functions. Conditional function group is used to repeat several times their input argument until a given condition is reached. Note ICE function arguments are evaluated before the function is called therefore those loops would either run forever and never start. The trick is to use a prefix function as argument whose logical result will be used for further evaluations an accumulator is. For example conditionalWhile (accumulatorInitialization, $condition, $accumulatorChange) requires two prefix functions for the condition (logic result) and to change the accumulator:
+
+ExpressionXX> systemUseGroup 'conditional'
+ExpressionXX> ($condition, x) = 'x < 4'
+ExpressionXX> ($accChange, x) = 'x + 1'
+ExpressionXX> conditionWhile (1, $condition, $accChange)
+Sets the internal acc = 1, then while $condition (acc < 4) is true, executes acc = accChange(acc) = acc + 1. It will return 4.
+
+The 'flowControl' group is more powerful and is able to change the order in which sub-expression are evaluated. A sub expression is contained between two ';' or from beginning and first ';' or from last ';' and end of expression. 
+
+Usually those loops are not used because it is possible and more efficient compute ICE functions directly on lists.
+
+The integer group supports basic integer function (up to 63 bit). The following are just few example:
+
+ExpressionXX> systemUseGroup 'integer'
+ExpressionXX> integerFactorization (324)
+Returns the 324 prime factors, as a proof they can be multiplied:
+Expression10> diffuseCumulate('*', answerLast)
+return 324
+
+There are useful base converters:
+
+Expression11> integerBaseTenToBase(2, 324)
+'101000100'
+
+Expression12> integerFromBaseToBaseTen(2,'101000100')
+answer12 = 324
+
+Eventually there are the rounding functions very useful to reduce the decimal digits of results like floor, ceiling and rounding. There is also integerRoundToDigit to reduce the number of decimal digits.
+
+The engineer function group can be used for basic engineer calculation like +/ (the inverse of the sum of the inverse) or +^ (the squareroot of the sum of the squares). A useful function is for the one looking for the standardized value closer to the give input interval:
+
+Expression3> systemUseGroup 'engineer'
+Expression3> engineerPreferredValue (40%10)
+answer3 = 39%10
+
+
+Or to the ones (below and above the given input interval): 
+
+Expression8> engineerPreferredValueCloser  (40%10)
+answer8 = (           39%10,          47%10 )
+
+The equation group has several functions to solve equations (linear, not linear, simultaneous). FindRoot is the most used for single equation, it requires the beginning interval and the Y of horizontal cross line (usually 0):
+
+Expression4> ($f , $x) = 'x^2-16'
+'f'
+
+Expression4> equationFindRoot($f, 0_5, 0)
+answer4 = 4
+
+Expression5> equationFindRoot($f, 0_-5, 0)
+answer5 = -4
+
+GaussElimination can be used to solve linear simultaneous equations.
+
+
+
+
+
+*** work in progress *** 
+ 

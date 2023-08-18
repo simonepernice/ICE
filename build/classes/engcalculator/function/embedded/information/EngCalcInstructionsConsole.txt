@@ -1,0 +1,154 @@
+ICE console
+Ver 1.4.4
+Turin 14th March 2014
+
+By Simone Pernice 
+pernice@libero.it 
+http://simonepernice.freehostia.com
+
+Console
+
+The console is the graphical user interface. It collects the user expressions and send them to the kernel (as strings), then it waits for the kernel answers (again as strings) and displays them to the user. Moreover it provides a lot of help to the user in terms of commodities, file management, function graph, multi line statements. In the next points the console most useful features are explained. 
+
+
+1. The history of the executed commands is stored in the console. It is possible to go through them with PAGE UP or PAGE DOWN arrows. The history is what is saved and may be opened (and run again) later. When a ICE (history) file is opened, it is just loaded in the input area. So the user can make same change before push enter key. There is also window to see and edit all the lines of the history (from menu or CTRL+H).
+
+2. Pushing the TAB key, the console tries to complete the current function or variable name searching in the internal database. If more than a match is possible, it suggests all the functions that would complete it. For example push TAB without entering any character to see all the variables and functions available. As soon as the next command is entered all the suggestions disappear. 
+
+2.1 The function with more than 1 argument are displayed followed by ( like plotStandar(. 
+
+2.2 The functions with 1 or 0 argument are displayed followed by a space like sin 
+
+2.3 The variables are displayed without any extra character
+
+3. With CTRL + ENTER it is possible to enter a multi line statement. Every line will be sent separately to the kernel, which understands just a line at time. That feature is useful to execute a saved history file. Although the kernel understands a line per time, it is still possible to have an interaction between different lines defining functions and variables.
+
+3.1 Typing the char \ and then CTRL + ENTER it is possible to split a single line in a multiple line to be more readable. it wil be joined before execution.
+
+4. A preprocessor in the console, after pushing ENTER, will check the entered text:
+
+4.1 Adding the following characters: " ' ", "]", and ")" at the end of the expression if they do not match;
+
+4.2 Adding "*" between two numbers or letters separate by space (which means without infix operator);
+
+4.3 Adding "answerLast" at the beginning of an expression starting with " " (SPACE) followed by an infix operator. 
+
+4.4 Moreover typing an opening bracket ("(", "[", "'") triggers the console to write its closing pair (")", "]", "'"). That makes much simpler to input complex expressions. 
+
+4.5 When the caret is placed just after a bracket automatically its correspondent is highlighted (if any) 
+
+4.6 If CTRL+E is pressed the help of the first function on the left of the cursor is displayed on the console;
+
+If the preprocessor performs any change the text, it is not evaluated, but the new version replaces the one entered by the user. The next ENTER will compute the expression. Seldom the preprocessor may behave incorrectly, in that cases it is possible to disable the preprocessor from the menu Edit->Edit Aid. Hint: push ENTER to close all the open brackets and then continue writing the expression.
+
+5. ICE console can draw diagrams in the plot window (CTRL+P). Basically the plot window shows two, three and four column matrices on a Cartesian plane. For two column matrix the first one is considered the X data and the second the Y data. Three column matrix is used for surface plot, the third column represents the value of the function at the given X/Y rectangle. Four column matrix is used for vector plot: the first two elements of each row represent the vector origin, and the last two the vector direction. The plot drawing window will show all the variables which can be plot (which are all the ones containing two, three and four columns matrices). 
+
+5.1 To zoom in a rectangle drag with CTRL+LEFT button through its diagonal. It is also possible to zoom in/out dragging the mouse while pushing LEFT/RIGHT button, the zoom is proportional to the displacement while button is pressed.
+
+5.2 To move the Cartesian plane drag with central button down in the direction you want. The displacement is exactly as the mouse movement while central button is pressed.
+
+5.3 To copy some point in the input text area press SHIFT+LEFT button click. Each point is copied to the input text as "[xvalue, yvalue], ". Therefore to make a new graph just write "newgraph = [", push on the points with SHIFT+LEFT, delete last comma and close square brackets, and plot the new graph.
+
+5.3.1 If the group plot is loaded the behaviour of SHIFT+LEFT is different. Group plot automatically create the matrix variable plotFunctionPointsByMouseClick. Every time SHIFT+LEFT if clicked on a drawing a new point is added to this matrix and the result is immediatly showed. SHIFT+RIGHT would delete the last point added while SHIFT+MIDDLE button would delete the first button added. In this way it is possible to see right after the click the new points added to the functions and all the points are still available coming back to ICE console into the plotFunctionPointsByMouseClick variable.
+
+5.4 On the plot window there are option for each 2, 3 and 4 column matrix defined in ICE to:
+
+5.4.1 Visible to show or hide any of the printable matrix
+
+5.4.2 Joined to link the points of the draw or the line of vectors (to make the picture clearer if they are far from each other).
+
+5.4.2 Show Label to display the third column on 3 column graphs and 3-4 columns data on 4 columns graphs.
+
+5.4.3 A "Fit" button to fit the diagram in the Cartesian plane. Fit button behaviour can be customized in the option window.
+
+5.4.4 Show each point as cross, plus, square, diamond, circle, triangle. Set the colour of each drawing.
+ 
+5.4.5 An "Up" and "Down" button to go through the matrices with "visible" option selected.
+
+5.4.6 A "Options" button to go to the Option Window where it is possible to:
+
+5.4.6.1 Show the grid (and optionally its label), axes, and variable names.
+
+5.4.6.2 Set the visible X, Y, colour and vector interval ranges. While for X, Y is quite easy give min and max with colour and vector is more complex. For colour it is just given the minimum and maximum values. If minimum is higher then maximum the axes is drowen in the opposite direction. For vector the number of elements in the worst case (X or Y axes) and its maximum amplitude. 
+
+5.4.6.3 Set the tick displacement for X and Y. Usually tick goes at step of X and Y TCK. If an axes logarithmic the steps are x TCK * 10^(floor(log (current value)))
+
+5.4.6.4 Set the color for axes, grid and background.
+
+5.4.6.5 Set the Fit behaviour. Fit will work only on the selected parameters among X scale, Y scale, Color, Vector, X or Y Ticks.
+
+5.4.6.6 The "Fit" button on the plot window will fit the scale as per Fit Scale setting behaviour. Basically Fit in the Plot window is the same of Fit Scale.
+
+5.4.6.7 Set a logarithmic scale for X, Y, vector or color.
+
+5.4.6.8 Save and load all those settings to be reused in a next session (saving the command history as well).
+ 
+5.4.6.9 Save the current plot as a png image.
+
+6. It is possible to stop the ICE kernel if an user defined iteration is taking too long to be completed. It is also possible to run a new kernel if the current one is not behaving correctly. In this case the new kernel will share the functions and variables already defined in the previous one. That feature is useful to complete and save the job done with a previous kernel not working any longer.
+
+7. If a file called "startup.ice" is found in the ICE directory it is automatically executed at start up. That feature is useful to customize ICE with the most commonly used functions, variables and settings.
+
+8. Several menus are available:
+
+8.1 File menu is about save and load the ICE history
+
+8.1.1 Load to load an ICE file creating a new history and loading a new kernel
+
+8.1.2 Load appending to load an ICE file to the current kernel and history. This is useful to join ICE files.
+
+8.1.3 Save History to save the current ICE history with the latest name given
+
+8.1.4 Save History As to save the current ICE history with a name
+
+8.1.5 Save History to Statup to save the current ICE history in the ICE startup file. That is useful to define same preset in ICE enviroment. 
+
+8.1.6 Quit to exit ICE
+
+8.1.7 New workbook to create a new empty ICE document
+
+8.1.8 Save to TXT is a function to save all the output window (which contains also ICE answer) to a text file. This feature is thought to show the calculus results because those file is not loadable by ICE.
+
+8.2 Edit menu is about editing input, output and history
+
+8.2.1 History previous (PG DOWN) and next (PG UP)moves between history lines
+
+8.2.2 Edit history (CTRL+H) opens a window with the history where is possible to edit it before saving
+
+8.2.3 Edit input (CTRL+I) opens a window with the current input that can be edited. It is useful to edit very long input, for example after loading from a file. 
+
+8.2.3 Clean Output to clean the console output
+
+8.2.4 Clean Input (ESC) to clean the current console input text
+
+8.2.5 Find to open the find window to look for some word
+
+8.2.6 New Line (CTRL+ENTER) to add a new line without executing it
+
+8.3 Calculator is about kernel
+
+8.3.1 Plot Display (CTRL+P) open the plot window
+
+8.3.2 Step By Step, once selected will execute the next instructions (and multiple instructions) step by step. Use F8 to proceed to the next operation.
+
+8.3.3 Next Step (F8) goes to the next step if previous menu is enabled, otherwise if it was in the middle of a StepByStep session and the StepByStep was disabled, it goes to the end of the process
+
+8.3.4 Trace, once selected show what Expression is going ot be executed, it work also in a multi line Expression 
+
+8.3.5 Break tries to break the current kernel execution, it works well with user loops instruction but it sometimes does not with internarl ICE loops 
+
+8.3.6 Run New kernel load a new kernel sharing the old kernel definitions. That is useful if something goes wrong and the user want to save some variable before start a new kernel.
+
+8.4 Help
+
+8.4.1 Input Text Aid to enable the automatice test aid while user enter expression. It is useful in the few times it works badly.
+
+8.4.2 Suggest (TAB) will suggest any of the functions available to complete hai the current one or complete it if there it onle one option. All those suggestions on the output windows will disappear as soon as the kernel will provide the next answer.
+
+8.4.3 Help on last function (CTRL+E) will display the help on the last function entered. All those helps on the output windows will disappear as soon as the kernel will provide the next answer.
+
+8.4.4 Help open the help windows where several buttons let the user choose to see all the help abailables.
+
+8.4.5 About show the authors
+
+8.4.6 Donation show how to make a donation for ICE development

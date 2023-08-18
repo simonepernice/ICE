@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=ICE
+GenericName=Interval Calculator for Engineers
+Comment=Calculator for engineers
+Icon=/home/simone/Documenti/java/engCalculator/src/engcalculatorConsole/resources/icon.png
+Exec=/usr/lib/jvm/jdk1.8.0_11/bin/java -jar  /home/simone/Documenti/java/engCalculator/dist/ICE.jar
+Terminal=false
+Categories=Development;Java;

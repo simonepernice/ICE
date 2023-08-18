@@ -1,0 +1,69 @@
+/*
+ *     ICE (Interval Calculator for Engineer) is a programmable calculator working on intervals.
+ *     Copyright (C) 2009  Simone Pernice
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package engcalculator.function.embedded.calculus;
+
+import engcalculator.function.embedded.arithmetic.AriSum;
+import engcalculator.function.embedded.interval.ItvRight;
+import engcalculator.function.embedded.matrix.MatTranspose;
+import engcalculator.interval.Interval;
+import engcalculator.interval.ListIntervals;
+import engcalculator.interval.ListIntervalsMatrix;
+import engcalculator.interval.IntervalPoint;
+import engcalculator.interval.measurementUnit.MeasurementUnit;
+import java.util.List;
+
+/**
+ *
+ * @author Simone Pernice <pernice@libero.it>
+ */
+public final class CalIntegrateUniformFunction extends CalIntegrator {
+    private static final AriSum SUM = new AriSum();
+    private static final MatTranspose TRANSPOSE = new MatTranspose();
+    private static final ItvRight RIGHT = new ItvRight();
+
+    private final static String HELP = "... ('f', nofsectors, interval) returns the integrate function computed in the give interval split in the given sectors.\n Basically ... ($f, 100, 0_x) is a very efficient shortcut for the follwing expression ($integratef, $x) = 'integrate ($f, 100, 0_x)' and then computing intefratef in 0_100.";
+    private final static String[] EXAMPLE = {"($f, $x)='x', 10, 0_10"};
+    private final static String[] RESULT = {"listLinear(10, 1_10)#1, (listLinear(10, 1_10)#1 )^2/2"};
+
+    public CalIntegrateUniformFunction() {
+        super("calculus", "IntegrateUniformFunction", HELP, EXAMPLE, RESULT);
+    }
+
+    @Override
+    public ListIntervals _compute(ListIntervals input) throws Exception {   
+        ListIntervals result = computeIntegrateFunction (input);
+        final int s = result.size();
+        Interval accumulator = new IntervalPoint(0);
+        for (int i=0; i<s; ++i) {
+            accumulator = SUM._computeIntervals(accumulator, result.get(i));
+            result.set(i, accumulator);
+        }
+        
+        ListIntervals sec = RIGHT.compute(computeSectors(input));
+        ListIntervalsMatrix secM = new ListIntervalsMatrix (sec, sec.size()) ;
+        secM.addAll(result);
+        
+        return TRANSPOSE._compute(secM);
+    }
+    
+    @Override
+    public List<MeasurementUnit> _computeMeasurementUnit(ListIntervals input) throws Exception {
+        return null;
+    }    
+}

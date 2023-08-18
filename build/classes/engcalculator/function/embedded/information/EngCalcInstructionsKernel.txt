@@ -1,0 +1,328 @@
+ICE kernel and interval instructions
+Ver 1.4.2
+Turin 18th September 2013
+
+By Simone Pernice 
+pernice@libero.it 
+http://simonepernice.freehostia.com
+
+
+Introduction
+
+ICE is a simple Interval Calculator targeted for Engineers. Intervals are a way to express that a parameter is somewhere in a range whose only its extremes are defined, the exact value is not known. The missing of exact knowledge may be due to production tolerance, measurement accuracy, physical variations of an independent variable, etc. Real numbers can be considered as intervals whose extremes coincide, therefore ICE works on floating point values very well. 
+
+
+Given an equation where some of the input values can change in a range, ICE will provide an interval as result showing all the possible solutions. That is very useful in engineering design where the projects must satisfy the requirements over the tolerance of the used components. However with interval analysis the result will contain for sure all the possible answers of the problem, although some of them may be unlikely to happen. 
+
+
+Later it will be shown the interval approach can lead to so big result interval they cannot be accepted although some trick will be explained to reduce the interval result. However ICE can simply manage Monte Carlo simulations. That technic will provide the most likely results. However the result will not cover all the possible outcomes.
+
+
+ICE source code is written to be fast, multi platform and simple to learn and use. In order to be fast, ICE internal processes and its source code are designed to minimize the execution time using more memory when speed can be improved. The Java language was chosen to run ICE on most of the available platforms. ICE is simple to learn and use because it basically does not have a grammar: almost everything is a function (prefix or infix) which computes some list of intervals (respectively one or two) and returns one list of intervals. An ICE list is an ordered set of intervals (also zero). In ICE the lists are flat and can represent matrix as well. 
+
+
+This manual is quite theoretical, I tried to add as more examples as possible but I am much more keen on writing code than documentation. If you want to see all the commands available write "informationFunctionList". To have an idea on the features available use the command "informationFeatures".
+
+
+Note: in this manual all ICE functions are written between " " because it is not an ICE special character. Usually the examples are reported as "...example... == ...result...". To try that example just type "...example..." and push ENTER key to get the "... result ...". Note most of the infix operands are the same of C language (i.e.: "=" is to set a variable or function, while "==" is to check for equality). The keyboard key to press are written in upper case like CTRL (control button) or ENTER (enter button).
+
+
+ICE internal structure 
+
+ICE is composed by two separate pieces well integrated between them: the kernel and the console. 
+
+Kernel
+
+The kernel is the piece of code which understands the strings provided by the user (called expressions), computes them and returns their answers. Note every kernel answer (unless it is the result of an assignment, i.e.: "a=3") is automatically stored in the variable called "answerxx", where "xx" is a progressive number. It is possible to reuse previous answer just typing "answerxx". Moreover in the variable "answerLast" is always stored the last computation result unless it is a variable assignment. 
+
+It is possible run the kernel alone (without the ICE console) from the command prompt, which leaves all the functionalities available, although it is inconvenient for a human being compared to the interaction with the ICE console. However that feature may be useful if ICE is called by another program to be used as an external tool.
+
+
+Console
+
+The console is the graphical user interface. It collects the user expressions and send them to the kernel (as strings), then it waits for the kernel answers (again as strings) and displays them to the user. Moreover it provides a lot of help to the user in terms of commodities, file management, function graph, multi line statements. In the next points the console most useful features are explained: 
+
+
+Engineer Notation
+
+Usually scientific calculations require to manage values differing for several order of magnitudes. In engineering field it is commonly used a suffix indicating the magnitude of the value with step of 1000. The list follows with name, symbol to use in ICE, and value:
+   
+
+1. yotta     Y     1000^8       10^24     
+2. zetta     Z     1000^7       10^21     
+3. exa       E     1000^6       10^18     
+4. peta      P     1000^5       10^15     
+5. tera      T     1000^4       10^12     
+6. giga      G     1000^3       10^9     
+7. mega      M     1000^2       10^6     
+8. kilo      k     1000^1       10^3     
+9. milli     m     1000^−1      10^−3     
+10. micro    u     1000^−2      10^−6     
+11. nano     n     1000^−3      10^−9     
+12. pico     p     1000^−4      10^−12     
+13. femto    f     1000^−5      10^−15     
+14. atto     a     1000^−6      10^−18     
+15. zepto    z     1000^−7      10^−21     
+16. yocto    y     1000^−8      10^−24
+
+
+For example "12k == 12000, 12m == 0.012". Those suffices must follow the number without any space otherwise they are considered variables or functions. If you prefer, ICE understands  exponential notation as well: e.g. "12e3 == 12000, 12e-3 == 0.012". Note that it is not possible to use E which is EXA == 10^18, e.g. "12E3" gives error because after 12E, it is expected a function. By default ICE prints intervals in engineer notation and relative tolerance, however with "systemPrintMode" function it is possible to print the values in exponential notation and showing their extremes or tolerance.
+
+
+Interval
+
+In ICE, intervals can be written as "leftValue_rightValue", please note it is not used the words minimum and maximum for the interval extremes, the reason will be clear on Kaucher section. The actual value is something between left and right. Therefore we can define the air temperature during a summer day in Italy as "22_35" °C. The voltage at wall outlet in Europe is not exactly 230V, usually there is a 5% of tolerance, which means from 230-230/100*5 to 230+230/100*5. That interval can be written in ICE as "230%5". Sometime the tolerance is expressed in absolute terms, for instance an iron bar may have a length of 1 meter plus or minus 5 millimeter, which in ICE is written "1+-5m" meter. Note in ICE the tolerance is always symmetric around the interval average value.
+
+The kernel stores intervals by their extremes. Therefore to print an interval the average value and then the tolerance are computed. Although in the relative tolerance notation (which is the standard output) the mean value is reported, it is not more luckily to happen than other values belonging to the interval. There is not any statistical assumption in the interval theory. ICE can easily manage statistical interval and perform Monte Carlo analysis. By default ICE outputs result in relative tolerance, however with the function "systemPrintMode" it is possible to change that as preferred and the function "intervalExtremes" will show the left and right values.
+
+
+There are five different domains recognized by ICE for intervals:
+
+1. Literal: it is just a string without any value between a couple of quotation marks ('). If a symbol was never defined before it is considered to be a literal. As a shortcut for literal also $ is provided but it gets only correct ICE variable and function names. Therefore $a is the same of 'a' but 'a+2' or 'a 2' is not writable with $ syntax. There are very few functions working on literals because ICE is not designed for string manipulation. Usually literals are used to pass functions as parameters to other functions: in that case the argument will be the function name between quotation marks ('). For example in "calculusIntegrate($sin,100,0_2*PI)==2" the function "sin" is passed as argument to the function "calculusIntegrate" which computes its integration on 100 points in the range between 0 and "2*PI". Seldom may be required to use a literal inside a literal, in that case the symbol "\'" can be used. For example to define the function mysin as integration of cos function you can write: "($mysin,x)='calculusIntegrate(\'cos\',100,0_x)'" or "($mysin,x)='calculusIntegrate($cos,100,0_x)'". Note that it was entered "\'cos\'" because "'cos'" would had interfered with the main apices of the function definition.
+
+2. Point Interval: the interval minimum and maximum value are the same (e.g. "5_5" is just the real number 5 which follows standard rules for real numbers)
+
+3. Real Interval: is composed by two point intervals because the minimum and maximum values are different (e.g. "3_4, 4_3")
+
+4. Point Complex Interval: is composed by two point intervals, the real and imaginary part (e.g. "3+I*5"). The upper case i "I" is the imaginary unit, so that "I*I==-1".
+
+5. Complex Interval: is composed by two real intervals, the real and the imaginary part are composed by a real or point interval (e.g. "5_6+I*2_3, 2_3+I*5, 2+I*5_6"). The upper case i "I" is the imaginary unit, so that "I*I==-1".
+
+
+The rest of this paragraph is quite technical. It is useful understand it to run ICE at the maximum performance and to write better user functions. The average user can skip it. 
+
+The previous domains are stored in ICE as follows:
+
+1. Literal as (Java) String
+
+2. Point Interval as 64-bit IEEE 754 floating point
+
+3. Real Interval as two point intervals
+
+4. Point Complex and Complex Interval as two Real Intervals
+
+Obviously complex interval would cover all the possible domains, however to improve execution speed (and as side effect also to reduce memory occupation) it was decided to use the above data structures to store data in ICE. That is because most of the time the user will compute on point intervals, than real and eventually complex intervals. Every time a function (with just one type of arguments) is computed its input arguments are automatically extended to the higher domain of the inputs as well as its output. For example: a point interval "*" (times) a real interval returns a real interval. If a calculus between two real intervals returns a point interval it is stored in a real interval. To go back from complex to real interval use "complexRealPart" and "complexImaginaryPart" functions, and to go back from real to point interval use "intervalLeft" and "intervalRight" functions (see also "intervalExtremes" to get the list of left and right extremes).
+
+Computations involving only point intervals are faster than real intervals, which are faster than complex intervals. Therefore the computations involving "4_4.00000001" or "4" will give close results, but the ones involving "4_4.00000001" will be slower than the ones involving "4". Note ICE correctly recognizes, stores and computes "4_4" and "4" as point intervals (e.g. "programType(4_4) == 'pointinterval'" and "programType (4) == 'pointinterval'").
+
+Every computation on proper interval should include all the possible results. Due to floating point rounding that may not be the case on the extremes of the intervals. An extreme of an interval may erroneously drop on the wrong side of a solution point excluding it. To avoid that, it is possible to enable the outer estimation ("intervalRoundings 1") which after every computation on a proper real interval (and NOT on point interval) adds an epsilon to the higher boundary and subtract it to the lower one to make sure every solution is contemplated. It does the opposite on improper real interval (see the section on improper interval to understand why). The epsilon is the smallest value (higher than zero) in the 64-bit IEEE 754 quantization (note epsilon changes with number magnitude). That feature is disabled by default because some definition like "a-dual(a)==0" would not be true.
+
+ICE can only read point intervals. Therefore when a real or complex interval is entered, the interval is actual built at the moment: "5 +- 1" is read like point interval "5", the infix function "+-", point interval "1". The function build a new real interval whose extremes are 4, 6. From an efficiency point of view it is not the best choice because it is slow compared to a parser able to read directly real interval. However that design choice gives more freedom, for example +- may be applied to a couple of list of intervals, and it makes ICE internal code simpler (to write, debug and expand).
+
+When a function is evaluated a check on the input domains is performed unless it is a user defined compiled function. All the ICE functions works on point intervals, most of them on proper intervals, a lot on improper intervals, while at the moment few supports complex interval (like the arithmetic ones). Almost all functions are automatically extended to lists by ICE kernel. For example a user defined function on a variable will work fine on a list of elements: ICE will automatically recall it for each element of the list. 
+
+
+Functions extended to intervals
+
+It should be quite clear from the instruction up to this point what means to apply a function to intervals. However it will be formalized, to make it clears and explain interval pros and cons.
+
+Let us define y = f( x1, x2, ...) as a continuous function which takes several real numbers x1, x2, ... and returns a real number y. It is possible to think to f(x1, x2, ...) as the sum, division or a more complex operation. 
+
+Using intervals instead of real value we will have that inty = f (intx1, intx2, ...) where the prefix "int" stands for interval. Basically giving intervals as input to the function f, it returns an interval as output. Please note that extension is made automatically by ICE.
+
+The property of inty is that: for every real value x1' belonging to intx1, for every real value x2'  belonging to intx2, ... , exists a real value y' belonging to  inty so that y' = f(x1', x2', ...).
+
+For example "(2_3)^2=4_9". That means for every "x" in 2_3 exists a "y" in 4_9 so that "x^2==y". Note in that case we can change the last "exists" in "for every". Unfortunately usually that is not the case, interval calculus tends to provide output result bigger then necessary. Due to the given definition ("... exists a real value y' belonging to  inty...") if the answer was a super-set of the interval 4_9, it would have been a correct solution. "c_d" is a super-set of "a_b" if and only if "c <= a" and "b <= d". For example 3_10 a super-set of 4_9. It is a correct answer because for every "x" in 2_3 exists a "y" in 3_10 so that "x^2==y". By the way note in the latter case the opposite is not true: there are "y" in 3_10 (for example 10) which does not find "x" in 2_3 so that "x^2==y". ICE is coded to provide the smallest interval as solution on the basic operations; however when different operations are mixed, that is no more the case, due to intervals missing of correlation. With missing of correlation among interval I mean every time the same interval appears in an expression it is considered as a different value, which may extend the output interval. That is why "1_2 - 1_2 == -1_1" and it is not equal to 0 as it is the case on real number.
+
+That is very useful (pros) because "inty" contains all the possible results returned by "f" applied to every real value contained in the input intervals. However (cons) in "inty" there may be some extra value which is not returned by "f" applied to any of the real value contained on the input intervals. That is very important, I want to repeat it: not all the values belonging to the result interval may be solution of the given equation.
+
+The latter is the main cons of interval analysis, for example the interval from minus infinity to plus infinity is a correct solution of every possible function and input value. However in interval analysis (and in ICE) all the effort is done to get the smallest interval possible as solution. Unfortunately there are some cases explained below where it is not possible to have the smallest solution interval. For that reason there are a couple of function scan tools in ICE to check if a smaller interval may exists (see "functionScanRandom" and "functionScanLinear"). Moreover the Monte Carlo analysis is straight forward and does not suffer from output over estimation. Every operation may grow the result interval more than required, however beginning to compute with small interval and taking care of the structure of the equations (as explained in the next paragraphs) it is possible to have a small enough result interval.
+
+The rule to build the result interval when the function "f" is applied to the real intervals (X, Y, ...) is to make the union operation of the function results for every possible point interval x belonging to X, y belonging to Y, and so on. The union (symbol  "|" in ICE) between two intervals is defined as (a_b | c_d) == min(a, c) _ max(b, d). Please note if a_b and c_d are disjointed, the union will add points not belonging to a_b, neither to c_d. That is correct because as explained before the result interval may contain some extra value.
+
+
+Boolean function extended to intervals 
+
+Functions are extended to intervals simply making the union of their output values. Boolean functions like comparison (less "<", less ore equal "<=", equal "==", more ">", more or equal ">="), set (subset "<<", superset ">>"), logic (and "&&", or "||", unary not or binary xor "!!") provide true or false as answer. Their extension to interval creates a new state, which in ICE is called "trueFalse". It happens when some assertion may be true or false depending on the real inputs chosen inside the interval inputs. For example: "1_3 < 2_5 == trueFalse" because for every "x" in 1_3 and "y" in 2_5 the result may be true or false depending on the chosen "x" and "y". In ICE that three state logic is represented with intervals (respectively 1, 0_1, 0). The respective constants  ("true", "trueFalse", "false")  are also defined in ICE.
+
+
+Intervals limitations
+
+Standard Intervals do not have opposite operations. If the variable "a" is not a point interval the following equalities do not stand: "a-a == 0" and "a/a == 1". That happens because every time an interval appears in an expression it is considered uncorrelated to each other. Therefore the expression "a/a", when "a" is not a point interval, is like "a/b" where by chance "a" is equal to "b". Therefore the result of that operation is not 1 because taking a real value from the first interval and dividing it for one value of the second, we do not always get 1. Without those properties it is not possible to solve all the linear equations. However that limitation is overcome by Kaucher directed intervals as you can see in the next section.
+
+The standard calculus operations on real numbers are extended to intervals. However note that intervals behave differently from real numbers on some operations. The main difference is "a*(b+c)" is a subset (NOT always equal) of "a*b+a*c". That happens again because the two "a" in the second expression are uncorrelated. Our purpose is to have the smallest interval containing the solutions of our problem. Therefore to obtain the smallest solution every variable should appear just once in the evaluated expression. If an expression where a variable appears more than once  is entered in ICE, it will warn you because you may get an interval bigger then necessary. For example if you write the following expression "a=5_6;a*a", ICE will warn because "a" appears more than once. If "a" was a point interval that would have not rose any warning, i.e.: "a=5_5;a*a". It is not always possible to avoid the variable repetition, however in the previous case it is quite simple: "a=5_6;a^2". ICE checks only variable for repetition, i.e.: 1%5*1%5 does not rise any exception because all numbers are translated in point interval and then"%" is applied. Eventually in the cases where it is not possible to avoid variable repetitions, ICE has some tools for function scan ("functionScanLinear" and "functionScanRandom"). They will check if a smaller solution interval exists. That is a very long computational algorithm, to be executed in a reasonable amount of time just few points of the function are tested. Therefore the answer will not be correct for sure, however it usually gives a good idea of the size of the result.
+
+Being the intervals defined by their extremes, the solution of a problem on n dimensions will always be an hyper-rectangle containing the solution. However in most cases that shape becomes quite bigger to contain the actual solution if that has a representation not matching with a hyper-rectangle (like a sphere or a segment, ...). For example the equations "y == x, x == 1_2" will return as interval solution the square "x == 1_2, y == 1_2"; while the real solution is actually just one of the diagonal of that square.
+
+
+Kaucher Directed Intervals
+
+ICE uses the Kaucher directed intervals, which includes intervals with negative direction. A negative directed interval has left extreme higher then right extreme. They are called improper intervals, while standard interval are said proper. Proper intervals work like positive numbers where it is not possible to solve a problem like 5+x == 3 because  x+5 must be equal or higher than 5 (if x>=0). The same happens with addition over intervals where the tolerance can only increase. Improper interval makes possible to solve more problems although a negative directed interval as final solution has an interesting meaning (see below).
+
+In the basic interval theory there is not the inverse and the opposite of an interval so that "a*(1/a)==1" and "a+(-a)==0". That is a limit in the solution of equations for example if "x + 1%5 = 2%10" then x is NOT equal to "2%10 - 1%5 (==1%25)". However that limit is overcome by directed intervals thanks to the "intervalDual" operator. It exchanges the extremes of an interval "intervalDual(1_2)==2_1", it transforms a proper interval into an improper and vice versa. Thanks to "intervalDual" it is possible to define the opposite of the basic arithmetic operations. Therefore the opposite of "+" is "-dual", and of "*" is "/dual". Basically the arithmetic opposite operation is obtained just computing it on the dual interval: "a-dual(a)==0" and "a/dual(a)==1". Therefore solution of the previous equation will be "x == 2%10 - dual(1%5) == 1%15". By the way note "dual(1%5) == 1%-5".
+
+
+Functions applied to directed intervals
+
+Using directed intervals as input instead of real value we will have that dinty = f (dintx1, dintx2, ...) where the prefix "dint" stands for directed interval and f is a continuous function.
+
+The property of dinty is that: 
+
+for every/exists x1' belonging to proper/not proper dintx1/dual(dintx1),
+for every/exists x2' belonging to proper/not proper dintx2/dual(dintx2),
+... , 
+exists/for every y' belonging to proper/not proper inty/dual(inty)
+so that y' = f(x1', x2', ...).
+
+For example "(3_2)^2=9_4". That means for every "y" in 4_9 exists "x" in 2_3 so that "x^2==y". However due to interval calculus we may obtain every super set of the interval 9_4 as solution, it depends on how the equation is computed and written. "c_d" is a super-set of "a_b" if and only if "c <= a" and "b <= d". For example 8_5 is a super-set of 9_4. It is a correct answer because for every "y" in 5_8 exists "x" in 2_3 so that "x^2==y". Note in the latter case the opposite is not true: there are "x" in 2_3 (for example 3) which does not have "y" in 5_8 so that "x^2==y".
+
+Unfortunately (cons) inty may not contain all the possible results returned by "f" applied to every real value contained in the input intervals. However (pros) in inty there are only values returned by f applied to real number chosen from input interval. No extra value is present like happens with proper intervals.
+
+Think to an equation whose result is the area inside a circumference with radius 1. The equation my be "x^2+y^2==0_1". A square circumscribing the circumference (for example x == -1_1 and y == -1_1) would be a correct proper solution. A square inscribed in the circumference (for example x == 0.7_-0.7, y == 0.7_-0.7) would be a correct improper solution.
+
+When the function f is applied to the real intervals (X, Y, ...) the result interval is the union operation on the function results scanning every proper variable through their intervals and the intersection scanning every improper variable through their intervals. The intersection (symbol "&" in ICE) between two intervals is defined as (a_b & c_d) == max(a, c) _ min(b, d). Please note if a_b and c_d are disjointed, the intersection will be an improper interval. Thanks to the intersections only the values present in every solution will be provided in the final answer.
+
+
+Lists 
+
+In ICE every (input and output) value is contained in a list. Lists are usually flat. For example if you enter the expression "4+5", ICE answers with "9". You are actually asking to the infix function "+" to operate on the left input list "(4)" and on the right input list "(5)", therefore "+" returns the list composed by the single element "(9)", which for clarity is represented by ICE without brackets.
+
+To write a list composed by more than one element, just separate them by commas and usually collect between round brackets. The brackets are not strictly required, they are usually used because the priority of "," is very low: "4+5,6,7==9,6,7" while "4+(5,6,7) == (9,10,11)". Although the list are a flast sequence of intervals it is possible to use sub-list as element. A sub-list is an interval which is actually made by a list, it is identified by {}. It is not possible to nest a list into a list, i.e.: "a=(1,2,3);b=(1,2,a,3)" the answer is "b = (1,2,1,2,3,3)". However it is possible to nest a sub-list: "a={1,2,3};b=(1,2,a,3)" the answer is "b = (1,2,{1,2,3},3)". Sub-list can be nested without limit. Sub-list are used when a function requires a list plus other aguments (lists, intervals, literal), to avoid to flatte the input into a single list. Moreover sub-list are used with matrix to compute on several matrix on the same operation.
+
+Most of the functions operation are automatically extended to list elements. For instance "4 + (5,6,7) == (9,10,11)" because ICE automatically extends "4" to "(4,4,4)", then it applies the function "+" element by element. Therefore loops should never be used to apply the same function to the elements of a list, that is done intrinsically, quickly e simply by ICE.
+
+A list may be named. That happens when the list is assigned to a variable: "a=(1,2)" returns the list "(1,2)" with the name "a". Note ICE do not store "(1,2)" in an answer variable because it has already its variable name. That feature let the user defines several times the same variable without need to use " ' ". For example "a=(1,2)" and "a=(3,4)" is correct, although in the second expression it is expected a literal on the left of "=". However the left expression is the list "(1,2)" but it is named as "a".
+
+There are several ways to create the most useful list. The common functions are: "listLinear (numberpoints, start_end)" to create a list of the given "numberpoints" from "start" to "end" (e.g. "listLinear (9,1_5) == (1,1.5,2,2.5,3,3.5,4,4.5,5)"). Other functions do the same on integer: "start .. end" (optionally " .. step") to create an integer list between start and end (e.g. "2 .. 5 == (2, 3, 4, 5)","2 .. 5 .. 2 == (2,  4)").
+
+It is possible to get elements from lists with "::" operator which requires the indexes to get from the list (the first element has index 0). For instance: "(1,2,3,4)::0 == 1", "(1,2,3,4)::(0,0) == (1,1), (1,2,3,4)::(1_3) == (2,3,4)". Negative index count from the end of the list (-1 is the last element, -2 the one before the last and so on), i.e.: "(1,2,3,4)::(2_-1)==(3,4)". If the intervals are not proper, the elements are taken in the opposite order: "(1,2,3)::(-1_0) == (3,2,1)". "listSize" gives the number of elements of a list, since the first element is indexed by 0 that means "listSize - 1" is the last element index. 
+
+In order to modify elements of a list it is possible to use "::=" operator which requires the list to be changed on the left and takes on the right the index to modify and the new intervals. The indexes rules are exactly like "::" with the difference after the index it is required to write the new values: "(1,2,3,4) ::= (1,10) == (1,10,3,4)".
+
+
+Matrices 
+
+ICE supports matrices. Matrices are lists split in rows according to the given number of columns. The command to set the number of columns of a list is "#". For instance "(1,2,3,4)#2" is represented like:
+
+"[1, 2]
+[3, 4]"
+
+To insert a matrix it is also possible to use the notation with square brackets [[1, 2],[3, 4]]. 
+
+Use "#0" to transform a matrix back to a list.
+
+Most of the functions do not care if the input is a matrix or a list, they behave in the same manner. Therefore "2*(1,2,3,4)" gives the same answer than "2*[[1, 2],[3, 4]]" which is the correct answer for a matrix. Moreover there are extra functions for matrix like: "matrixRowSize" provides the number of rows, "matrixColumnSize" provides the number of columns, "**" row by column product, "matrixEigenValue" and "matrixEigenVector" to compute the characteristic parameters of the matrix, "matrixDeterminant" and other commodities to create identity and diagonal matrix, function to "matrixTranspose", etc... Unfortunately a lot of algorithms developed for matrices can only be applied to point intervals.
+
+Like for lists it is possible to extract sub matrix with the following syntax :: (row_interval, column_interval, ...). Intervals can be used to get more than 1 element. Negative number counts from the last element (-1). Improper interval gets the number in the opposite order. "::=" applies to matrix with the equivalent syntax used for lists.
+
+
+Internal Functions
+
+ICE is almost grammar less, it is basically a collection of functions applied to a list which return a list as answer. There are two kind of functions: 
+
+1. prefix like "sin" and "cos" which have just an argument "(list)" on their right
+
+2. infix like "*" and "/" which have left and right arguments "(list)"
+
+The prefix functions have the maximum priority so they are evaluated as soon as possible. Then the infix functions are evaluated according to their priority and their associativity (toward right or left). Running the function "help" on an infix function provides the priority level and associativity direction. For example "+" has a lower priority than "*", which has lower priority than "^". Therefore "2+3*2^3 == 2+3*8 == 2+24 == 26". Being the prefix function with the highest priority we have that "-2^2 == (-2)^2 == 4" and not "-4". Most of the functions are left associative, one of the few exception is "^" which associates toward right (e.g. "20/2/5 == 10/5 == 2" and not "20/2/5==20/0.4==50" while "2^3^2 == 2^9 == 512" and not "8^2 == 64").
+
+In ICE the functions do not require brackets to collect their argument. However since prefix functions have the highest priority round brackets are required when a function needs a list of arguments longer than 1 element. For instance: "cos 0, 0 == (cos 0), 0 == (1, 0)" while "cos (0, 0) == (cos 0, cos 0) == (1, 1)". In the previous example you see how ICE automatically extends a prefix function to the intervals of a list. That happens also to user defined function. One more example: "plotStandard $sin,10,0_2*pi" ("0_2*pi == (0_2)*pi == (0*pi)_(2*pi) == 0_(2*pi)") rises an error because "plotStandard" wants a three argument list while just one is provided, to avoid the error join the elements in a list: "plotStandard ($sin,10,0_2*pi )". Last example "programTimeMs" does not need any argument. It provides the current time in milliseconds. Usually it is used to evaluate the execution time of a command. Therefore "programTimeMs" is correct, however "programTimeMs - 5" rise an error because ICE tries to compute "programTimeMs" on the list "(-5)" to avoid that just write "programTimeMs () - 5".
+
+The only exception to this structure where everything is an infix or prefix functions are:
+1. the brackets "()" which are executed before the other elements
+
+2. the brackets "[]" which are executed before the other elements and then the resulting list is transformed in a row matrix or if it is a matrix it is just returned. That is done because in [[row1], [row2], [row3]]: the internal brackets make the rows, the external commas join the rows into a matrix, the external brackets do nothing (with exception of gives priority to the matrix)
+
+3.  subexpression ";" which does not provide any result and requires the kernel parser to review all the input linke looking for changes (some literal may become a variable or vice versa). 
+
+Since there are plenty of internal functions they are collected in groups. Each group as a name. Usually the prefix function name is build by the group name in lower case followed by the function name with first char in upper case. "plotStandard" and "plotData" are the functions "Standard" and "Data" of the group "plot". However few prefix function like the ones in the "trigonometric" group does not get the group name like "sin", "cos" to make ICE simpler to use. Also infix function like "+", "-" belong to a group (in this case "arithmetic" one), however it is never written in the function name.
+
+There are several groups of functions available: arithmetic, calculus, compare, complex, conditional, decibel, definition, diffuse, engineer, equation, file, flowControl, fourier, functionScan, information, integer, interval, list, logarithm, logic, matrix, optimization, plot, power, program, setInterval, setList, statistic, system, trigonometry, constant and convert. 
+There are also group of groups called: BASE (the basic groups like arithmetic, power, trigonometry, etc.), ENG the groups useful for engineer stuff (like fourier, decibel, engineer, etc.), PROGRAM groups are the one useful for advanced programming (like logic, flowControl), ALL are all the groups available.
+It is possible to load a group-of-function or a group-of-groups with "systemUseGroup 'name'".
+
+
+At startup ICE would not understand anything (with exception of "()" "[]" and ";" which are hardcoded in the kernel) because it was not loaded any function. However the command "systemUseGroup ('BASE')" is lunched automatically to load all the main functions. Then the command "informationAbout" is lunched to show the basic information to the user.
+
+Hint: write the group name (like "convert", "constant", ...) and push TAB key to see all the functions belonging to it.
+
+
+How get help on ICE internal functions
+
+The most useful functions to know how ICE works are: 
+
+1. "informationFeatures" provides a summary of the main features with relative functions available in ICE.
+
+2. "informationFunctionList" gives the help of all the functions available in ICE.
+
+3. "help ('some string')" provides the help to all the functions beginning with the given chars.
+
+4. "exactHelp" is like help but returns just the exact matching function if found.
+
+
+Internal Variables
+
+Variables are just a special case of prefix function: they are prefix function with 0 arguments. They give back their own value. A lot of constants are stored in ICE: 
+
+1. Mathematical: point interval like "E" or "PI"
+
+2. Logic: point interval like "true" and "false" and real interval like "trueFalse".
+
+3. Physical: real interval in the "constant" group (e.g.: "constantProtonMass", "constantFaraday"), they take into account the accuracy with which those constants are known.
+
+4.  Conversion coefficients: point interval in the "convert" group (e.g: "convertOunceToKilogram", "convertDegreeToRadiant") . For example to convert 5 ounces to kilogram just write "5 * convertOunceToKilogram".
+
+
+User defined variables and functions
+
+Although ICE has several hundreds of internal functions something will miss for sure. That is why it was added the opportunity for the user to create its own variables and (prefix) functions. Here follow the basic pieces of information to build an user function:
+
+1. Name: function and variable names can contains only characters (from a to z and from A to Z) and numbers (from 0 to 9). They must begin with a character. Only infix functions and prefix functions defined by infix functions can contain special characters, however the user cannot define them.
+
+2. Definition: to define a variable write its name "=" its value (e.g.: "a = 4, b = 7" or "($a, $b) = (4, 7)"). ICE will expect a literal on the left of the "=" sign. If the variable is already defined it is overwritten unless it is an internal ICE variable. Note that "($a, $b) = (b, a)" would swap a and b variables. To define a function the syntax is similar "($function_name, $parameter1, $parameter2, ...) = 'function algorithm'". Note that if the "function algorithm" is a list the function will return a list (several values). For example the function " ($circle, $t) = 'sin t, cos t' ", whose examples are " circle(0) == (0, 1) ", " circle(pi/2) == (1, 0) ". The "circle" function may be used in a parametric plot to display a circle. If in the "function algorithm" it is used some variable which is not defined in the list of parameters its value is got as constant. Therefore if it later changes, the parameter will keep the value at the definition time (e.g.: "a=2; ($f,x)='2*a*x'; f(2),a=3,f(2) == 8,3,8"). If a function was already defined it is not possible to redefine it without writing its name between " ' ", because otherwise the ICE parser would try to execute the function. For complex algorithms there are several flow control instructions that can be used. The functions are split in tokens when the function is stored in ICE. At the execution of the function the interpreter will execute the tokens  (which is much faster being the tokenize step (the longest) already performed).
+
+3. Recursion: the only exception where a parameter can be used before its definition is the self function name. That was done to implement recursion. For instance to implement factorial a possible (not efficient) code would be: "(factorial, x) = '1, flowControlReturnThisIf (x <= 1); x*factorial(x-1)'". To implement that, ICE stealthily pass the function itself as an argument to the function. Therefore looking at the help of an user defined function, among the parameters it is automatically added the function name. For example define a function "(f, x, y) = 'x + y' " and then look at its help " exacthelp('f') ", you will find: "...f(x,y,f)=x+y..." the function name "f" is automatically passed as an argument. Although "f" is not a recursive function, the function name is always added on the parameter list. Thanks to that it is possible to define recursive function.
+
+4. Type control: sometime the functions have restriction on their arguments. To check the input use the function 'type' which returns a literal with the name of the interval which can be checked by the user with "==" function.
+
+5. Error: every time a wrong operation is performed an error is generated by ICE. The user functions can do the same thanks to the "error" function which returns the given literal as error message, for example: "(factorial, x)='flowControlSkipNextIf (x >= 1); programError('The factorial argument must be > 0); 1,returnthisif(x<=1); x*factorial(x-1)' "
+
+6. Function call: sometime a function gets another function as argument (in that case the function name is provided between " ' "). In that case take the function name as literal argument and use "programCallFunction" to recall it. For example: " ($d,f,x1,x2) = '( programCallFunction( f, x1) - programCallFunction(f, x2)) / (x2 - x1) ", please note derivate function is already defined as internal ICE function ( and is called "calculusDerivate").
+
+7. Argument number control: if a function is expected as argument it is possible to check its number of expected arguments with "programArgumentSize". It returns the number of expected argument, 0 for variable and other stuff.
+
+8. Sometime a predefined function or variable may not work as required. In that case it is possible to redefine it with the function "defineOverWriteEmbeddedFunction 1", which disable the internal function protection. When an internal function is overwritten it is saved with "old" prefix. For example: "defineOverWriteEmbeddedFunction 1;delete($sin);($sin,x)=(oldsin(x)/x)"
+
+
+There are also other kinds of user functions which may be useful:
+
+1. Compiled Function: are defined exactly like standard function but with "_=" operator. They do NOT support flow control instructions, sub expression ";", and recursion. At its definition the compiled function is split in tokens, and at its first evaluation the interpreter flow is transformed in RPN (Reverse Polish Notation) code and optimized. The optimization code is very simply, it works better when the variables are at the end of the expression (i.e.: " '2*3+x" code is faster than "x+2*3"). Every next evaluation will use the RPN code which is much faster since does not require any internal recursion through the tokens. Moreover the domain of the function arguments and other checks are not performed, which means several internal errors may be generated. Compiled function runs about at least 20% faster the standard functions. However there are a lot of draw backs as highlighted, therefore it is preferable to avoid their use when speed is not critical.
+
+2. Interval Function: a two column matrix (column 0 is X and column 1 is Y) is used with ":=" to define a function. The matrix format is the same used for plot functions. It is used to define the Y values that the function should provide for every X value. For example:" $f := ((1,2,3,4)#1,(4,8,4,0)#1)", which means that f(x) is 4 for 1 < x < 2, 8 for 2 < x < 3, 4 for 3 < x < 4, 0 for x > 4. For every x lower than 1 is provided 4 and higher than 4 return 0. Since all the ICE function returning a plottable matrix use that format (like plot functions, "fft", "montecarlo", ...), it is possible to transform their result in function. Those function can be later used for other purpose ("intergate", "derivate", ...).
+
+3. Given a function is is possible to define its inverse interval function by "defineInverseFunction" whose syntax looks like "plotStandard".
+
+4. Given a function with several argument it is possible to define one where some of the arguments are fixed by "#=". 
+
+
+Monte Carlo
+
+
+Monte Carlo analysis is very important because proper interval analysis tend to provide over extimated results. Therefore in the statistical group were added all the functions required to perform Monte Carlo simulation. 
+
+The basic idea is to store in the input variables (a, b, c, ...) a long list (8000 elements by default) of values with a given probability density function (pdf). That can be done by the functions "statisticRandomList" and "statisticRandomListAsFunction". Then execute the required operations on the variables (ICE automatically will repeat the calculation on each value of the list of random number), which is basically a simulation. Eventually the result can be analyzed with statistical methods: "statisticAverage", "statisticStandardDeviationPopulation", ... The result statistical pdf can be extracted by "statisticFrequencyBinNormalized" and then used by "statisticRandomList" to create equivalent random list.
+
+The number of elements to be used in Monte Carlo, the kind of pseudo random generator and its seed can be set up in "statisticRandomGenerator"
+
+
+Grammar
+
+ICE is basically grammar less. Almost everything is a function (prefix or infix) or a list of intervals (which may also be empty) with the following exceptions: brackets "()[]" and " ; ". 
+
+Every input is called expression. An expression is a list (which may be empty) to be evaluated. A list is a flat ordered set of elements separated by ",". Sometime it is useful ask more questions in the same expression: that can be done writing the expressions (questions) between commas, ICE will return a list as answer. For example: "sin(pi/2), 5*4 == 1, 20". It is not possible to define and use a function or a variable in the same input list because at the parsing time every occurrence wold be considered a literal and it is parsed just once at the beginning. For example: "a=2,a+2" is wrong because the second occurrence of "a" is a literal and not the variable "2". 
+It is possible to split an expression in a set of sub expressions using " ; ". It triggers a new parsing of the input expression looking for all the literals become variables or functions and vice versa. For example the previous example become correct using ";": "a=2;a+2". The list build up to " ; " is discarded therefore in that case usually the partial result is stored in a variable. I.e.: "a=2; 2+2*a == 6", without the first "a=2" the job performed up to the ";" would have been lost. That is also used if the output of a function is very long (like the result of a plot) and the user does not want to see it ("a=1..100;" it would have been possible to write just "1..100" but the output would have been very long) or to change the execution flow through the sub expressions (i.e.: "i=0; i=i+1, flowControlRepeatThisWhile (i<10);i"). The execution flow can be changed only inside an expression changing the sub expression execution order.
+
+
+ICE parser works on a couple of steps:
+
+1. Reads all the input strings to split them in tokens, which means every number becomes a point interval (please note that only point interval are directly recognized by the parser), every function and variable becomes a pointer to the actual internal function and value. If a symbol was never found before it is considered to be a literal.
+
+2. Executes the required instructions following the functions precedence, brackets and ";" which is the end of a sub expression.
+
+The main draw back of this design is that it is not possible to define (but also redefine, delete) a variable (or function) and use it in the same sub expression. That is because while the expression was split in tokens the variable (or function) was not yet defined, therefore every occurrence was considered a literal. However that solution was chosen to improve the speed of user defined function execution which runs just the step 2 (by the way step 1 is the most time consuming). That is very nice because the aim of ICE is to run function over long list of values. By the way the user can create compiled functions which drastically reduce the step 2 execution time.
+ 
+1. Brackets:" ( ) " are used to prioritize expression (like collecting the elements of a list), for instance: "sin 0, pi/2 == (0, pi/2)" while "sin (0, pi/2) == (0, 1)". The square brackets " [ ] " are used to define a matrix row, the "," will automatically join the rows to build the matrix.
+
+2. End of sub expression " ; ". After every " ; " the input expression is again converted to token because some literal may become a variable or function (or may be defined or deleted) then the execution restarts from the next sub-expression if any. This procedure is much faster than the first tokenize because the expression is already split in token and only the one which may have changed are checked.
+
+3. Flow control: usually the sub expressions inside an expression are executed from left to right. However with flow control functions it is possible to change the order in which the sub expressions composing the expression are executed (for example to make loops). The flow control instructions answer with special intervals that will be recognized by the interpret to understand how to go on with the expression execution. The interpreter removes those intervals from the answer. Loops should never be used to apply the same functions to different argument because that is done intrinsically and faster by ICE. For example: the expression "i=1,j=0; j=j+i, i=i+1, flowControlRepeatThisWhile(i <= 10); j" gives "j=55", however it is much faster to ask "diffuseCumulate('+', 1 .. 10 )". "10^(1,2,3,4)" gives "(10, 100, 1000, 10000)" it may be replace by a loop but that would be much slower and cumbersome to write and read.

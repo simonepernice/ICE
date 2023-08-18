@@ -1,0 +1,134 @@
+/*
+ *     ICE (Interval Calculator for Engineer) is a programmable calculator working on intervals.
+ *     Copyright (C) 2009  Simone Pernice
+ * 
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package engcalculator.function.embedded.file;
+
+import engcalculator.domain.DomainList;
+import engcalculator.domain.DomainInterval;
+import engcalculator.domain.DomainIntervalLiteral;
+import engcalculator.function.CalculusException;
+import engcalculator.function.prefix.FunctionPrefix;
+import engcalculator.interval.ListIntervals;
+import engcalculator.interval.ListMatrixIntervals;
+import engcalculator.interval.IntervalPoint;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+/**
+ *
+ * @author Simone Pernice <pernice@libero.it>
+ */
+public class FilLoadPointMatrix extends FunctionPrefix {
+    private final static DomainList DOMAIN = new DomainList (new DomainIntervalLiteral(), new DomainInterval(), new DomainIntervalLiteral(), new DomainIntervalLiteral());
+    private final static String[] EXAMPLE = {"slex = (statisticRandom(listClone(10, 1_6)));diffuseCumulate ('+', slex - fileLoadPointMatrix(fileSaveList('savelisttest',{slex}), 1_0, '.', ','))"};
+    private final static String[] RESULT = {"0"};
+    
+    public FilLoadPointMatrix() {
+        super("file", "LoadPointMatrix", (byte) 4, DOMAIN, false, true, "... loads a matrix of real values from an ASCII file. It is a kind of brute force high efficency reader: it tries to read as more as possible. It can be used to read data created with other programs like log files. Every row is expected to end with a new line. A number is [+-.][0..9]+ and it is translated in a point interval. If it is not possible to translate it is skipped. Every input row becomes a matrix row. As input it requires the file name, the number of rows to read and then the ones to skip in the format read_skip (use 1_0 to read everything), the character used as decimal separator, the character used as value separator.", EXAMPLE, RESULT);
+    }
+
+    @Override
+    public ListIntervals _compute(ListIntervals input) throws Exception {
+        ListMatrixIntervals result;
+        try {
+            File workingFile = new File (input.getFirst().getName());
+
+            FileInputStream fis = new FileInputStream (workingFile);
+
+            int columns = -1;
+            final int rowRead = (int) input.get(1).getLeft();
+            final int rowSkip = (int) input.get(1).getRight();
+            final char decSep = (char) input.get(2).getName().charAt(0);
+            final char valSep = (char) input.get(3).getName().charAt(0);
+            
+            if (rowRead <= 0 || rowSkip < 0) throw new CalculusException("Columns, read or skip rows are out of range");
+            
+            result = new ListMatrixIntervals (columns);
+            
+            int c = 0, col = 0, rr = 0;
+            StringBuilder data = new StringBuilder ();
+                        
+            while (c != -1) {
+                c = fis.read();
+                
+                while ( (!Character.isDigit(c)) && c != '+' && c != '-' && c != decSep && c != -1) //go to the first number
+                    c = fis.read();
+                
+                while (Character.isDigit(c) || c == '+' || c == '-' || c == 'e' || c == 'E' || c == decSep) {//read next value with a little of precheck for the parsing
+                    if (c == decSep) data.append('.');
+                    else if (c == 'E') data.append ('e');
+                    else data.append((char) c);
+                    c = fis.read();
+                }
+                
+                //Try to convert the last data read to a point interval
+                if (data.length() > 0) {
+                    try {             
+                        result.add(IntervalPoint.valueOf(data.toString()));
+                    } catch (Exception pe) {
+                        result.add(new IntervalPoint(0.));
+                    }
+                    data.setLength(0);
+                } else result.add(new IntervalPoint(0.));
+                
+                //go to the next element
+                while (c != valSep && c != '\n' && c != -1) c = fis.read(); 
+                ++col;
+                
+                //at the end of line store the column number
+                if (c == '\n') {               
+                    if (columns == -1) {
+                        columns = col;
+                        result.setColumnsNumber(columns);
+                    } else {
+                        while (col < columns) {
+                            ++ col;
+                            result.add(new IntervalPoint(0));
+                        }
+                    }
+                    col = 0;
+                    ++rr;
+                }
+                
+                if (rr >= rowRead) {
+                    if (rowSkip > 0) {
+                        rr = rowSkip;
+                        while (rr > 0) {
+                            c = fis.read();
+                            while (c != -1 && c != '\n') c = fis.read();                            
+                            
+                            -- rr;
+                        }                      
+                    }
+                    rr = 0;                    
+                }                
+
+            }
+
+            fis.close();
+
+            return result;
+
+        } catch (IOException e) {
+            throw new CalculusException ("An error happens trying to read the file: "+e.getMessage());
+        } 
+
+    }
+
+}

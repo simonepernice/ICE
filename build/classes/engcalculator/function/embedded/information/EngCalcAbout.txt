@@ -1,0 +1,25 @@
+ICE (Interval Calculator for Engineer) 
+
+Copyright (C) 2009  Simone Pernice (simonepernice.freehostia.com, pernice@libero.it, ICE is hosted on http://simonepernice.freehostia.com/J2ME/ice/ice.html). 
+
+[VERSION]
+
+ICE software is provided with ABSOLUTELY NO WARRANTY, use it at your own risk. ICE is provided under license GNU GENERAL PUBLIC LICENSE Version 3.
+
+ICE is designed for technicians, its purpose is to carry out the standard operations on intervals (also complex), list or matrix of intervals in order to get a best and worst case analysis. ICE performs also statistical test to get the typical analysis.
+
+On the ICE console type one of the following commands or look at help window to see the documentation: 
+- 'informationTutorial' contains a short tutorial to explain the basic ICE usage;
+- 'informationExamples' to see several examples on problem solved with ICE; 
+- 'informationFeatures' to have a look at all the program features; 
+- 'informationInstructionsKernel' to understand what is an interval and the reason to use this calculator; 
+- 'informationInstructionsConsole' to use ICE graphical user interface; 
+- 'informationFunctionList' to see all the functions available; 
+- 'help' to get details on a given command; 
+- 'informationAbout' to show this help;  
+- 'informationHistory' to see the list of changes up to now; 
+- 'informationLicense' to read the full GNU GPL 3 licenes.
+
+ICE comes free of charge for you. It takes time to develop, improve and fix its bugs. If you use and like ICE send a postcard or donation to Simone Pernice, via Alagna 11, 10155 Torino.
+
+Thanks to the contributors: Stefania Giaconia for the graphic console.

@@ -1,0 +1,64 @@
+/*
+ *     ICE (Interval Calculator for Engineer) is a programmable calculator working on intervals.
+ *     Copyright (C) 2009  Simone Pernice
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package engcalculator.function.embedded.equation;
+
+
+import engcalculator.interval.Interval;
+import engcalculator.interval.ListIntervals;
+import engcalculator.domain.DomainList;
+import engcalculator.domain.DomainFunctionPrefix;
+import engcalculator.domain.DomainIntervalReal;
+import engcalculator.function.prefix.FunctionPrefix;
+import engcalculator.interval.IntervalPoint;
+
+/**
+ *
+ * @author Simone Pernice <pernice@libero.it>
+ */
+
+public final class EquFindRoot extends EquBisectionMethod {
+    private final static String HELP = "... ($f, interval, point1, point2, ..) finds the root of a 'thick' function f in the given interval beginning from point1, then point2, .. .\nIt needs the equation name, the initial interval containing the root (X) and the expected value (Y). It will be shrunken to the smallest interval containing the root. It is used bisection method. If the function returns multiple variables only the first element will be used to find the root.";
+    private final static String[] EXAMPLE = {"$sin, 1_4, 0, 0.5"};
+    private final static String[] RESULT = {"PI, 5*PI/6 "};
+    private final static DomainList DOMAIN = new DomainList (new DomainFunctionPrefix(1), new DomainIntervalReal (), new DomainIntervalReal ());
+
+    private FunctionPrefix f;
+    private Interval expectedResult;
+
+    public EquFindRoot() {
+        super ("equation", "FindRoot", (byte) 3, DOMAIN, false, true, HELP, EXAMPLE, RESULT);
+    }
+
+    @Override
+    public ListIntervals _compute(ListIntervals input) throws Exception {
+        f = FunctionPrefix.getFunction(input.getFirst().getName());
+        expectedResult = input.get(2);
+        return findIntersection(input.get(1));
+    }
+
+    @Override
+    protected Interval f(double x) throws Exception {
+        return f.compute(new ListIntervals(new IntervalPoint(x))).getFirst();
+    }
+
+    @Override
+    protected Interval g(double x) throws Exception {
+        return expectedResult;
+    }
+}
